@@ -1197,7 +1197,7 @@ const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|Bla
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
 // Deteksi apakah PWA sudah pernah diinstal (berdasarkan LocalStorage fallback)
-const isInstalled = localStorage.getItem('pwa_user_installed') === 'true';
+const isInstalled = localStorage.getItem('pwa_installed') === 'true';
 
 // Mencegah dan menangkap event instal resmi (Android/Desktop)
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -1208,7 +1208,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 // Menangkap event saat aplikasi sukses diinstal oleh pengguna
 window.addEventListener('appinstalled', (evt) => {
     // Kunci PWA Card agar tidak pernah tampil lagi
-    localStorage.setItem('pwa_installed', 'true');
+    localStorage.setItem('pwa_user_installed', 'true');
     if (pwaCard) pwaCard.classList.remove('show');
 });
 
@@ -1249,6 +1249,84 @@ if(btnCancel) {
         pwaCard.classList.remove('show');
     });
 }
+
+// ==========================================
+// 6. FUNGSI TOMBOL BACK FISIK MOBILE (HARDWARE BACK SUPPORT)
+// ==========================================
+let isProgrammaticHistoryUpdate = false;
+
+// MutationObserver secara otomatis memantau seluruh elemen saat overlay/modal terbuka
+const hwBackObserver = new MutationObserver((mutations) => {
+    for (let mutation of mutations) {
+        if (mutation.attributeName === 'class' || mutation.attributeName === 'style') {
+            const el = mutation.target;
+            
+            // Pastikan hanya memantau elemen overlay atau modal
+            if (!el.classList.contains('page-overlay') && !el.classList.contains('modal-overlay')) continue;
+            
+            // Cek status apakah sedang muncul atau tampil
+            const isOpen = el.classList.contains('active') || el.classList.contains('show') || el.style.display === 'flex' || el.style.display === 'block';
+            const oldStyle = mutation.oldValue || '';
+            const wasOpen = oldStyle.includes('active') || oldStyle.includes('show') || oldStyle.includes('display: flex') || oldStyle.includes('display: block');
+            
+            // Jika baru terbuka, tanamkan history ke dalam window / browser hp
+            if (isOpen && !wasOpen && !isProgrammaticHistoryUpdate) {
+                history.pushState({ isAppOverlayOpen: true, id: el.id }, "");
+            }
+        }
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Jalankan pantauan pada semua popup dan layer sub-halaman
+    const overlaysToObserve = document.querySelectorAll('.page-overlay, .modal-overlay');
+    overlaysToObserve.forEach(overlay => {
+        hwBackObserver.observe(overlay, { attributes: true, attributeOldValue: true, attributeFilter: ['class', 'style'] });
+    });
+    
+    // Saat user menekan tombol 'kembali / close' di layar aplikasi secara sadar (tangan)
+    // History disinkronisasi ke belakang 1 step agar tidak menumpuk error di tombol back hp
+    const closeButtons = document.querySelectorAll('.back-btn, .modal-close-btn, .btn-modal-cancel');
+    closeButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            // "e.isTrusted" memastikan klik adalah respon jari / mouse murni
+            if (e.isTrusted && history.state && history.state.isAppOverlayOpen) {
+                isProgrammaticHistoryUpdate = true;
+                history.back(); 
+                setTimeout(() => isProgrammaticHistoryUpdate = false, 100);
+            }
+        });
+    });
+});
+
+// Menangkap event popstate saat tombol fisik / hardware "Back" d hp ditekan
+window.addEventListener('popstate', (e) => {
+    isProgrammaticHistoryUpdate = true;
+    
+    // Kumpulkan semua sub-halaman & pop-up yang saat ini ada dalam keadaan terbuka
+    const openOverlays = Array.from(document.querySelectorAll('.page-overlay, .modal-overlay'))
+        .filter(el => el.classList.contains('active') || el.classList.contains('show') || el.style.display === 'flex' || el.style.display === 'block');
+    
+    // Jika ada halaman popup / overlay yang masih aktif...
+    if (openOverlays.length > 0) {
+        // Fokuskan tindakan ke elemen yang posisinya paling atas/terakhir dimuat di layar
+        const topMost = openOverlays[openOverlays.length - 1];
+        
+        // Cari tombol 'kembali' (close) bawaan yang ada pada overlay tersebut
+        const closeBtn = topMost.querySelector('.back-btn, .modal-close-btn, .btn-modal-cancel');
+        
+        if (closeBtn) {
+            // 'Tembak' (klik otomatis) ke tombol close tersebut agar script bawaan (.js) juga bekerja dengan alami menutup popup
+            closeBtn.click(); 
+        } else {
+            // Tutup paksa jika seandainya tombolnya tidak ketemu
+            topMost.classList.remove('active', 'show');
+            topMost.style.display = 'none';
+        }
+    }
+    
+    setTimeout(() => isProgrammaticHistoryUpdate = false, 100);
+});
 </script>
 </body>
 </html>
