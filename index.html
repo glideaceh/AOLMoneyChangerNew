@@ -141,7 +141,7 @@
   }
 
   /* ==========================================
-     PULL TO REFRESH MODERN CSS (BARU)
+     PULL TO REFRESH MODERN CSS
   ========================================== */
   .ptr-container {
       position: absolute;
@@ -1186,7 +1186,6 @@
         let isAtTop = true;
 
         homePage.addEventListener('touchstart', (e) => {
-            // Hanya aktif jika user berada di paling atas halaman
             if (homePage.scrollTop <= 0) {
                 isAtTop = true;
                 ptrStartY = e.touches[0].clientY;
@@ -1202,12 +1201,9 @@
             ptrCurrentY = e.touches[0].clientY;
             const diff = ptrCurrentY - ptrStartY;
             
-            // Tarik ke bawah
             if (diff > 0 && homePage.scrollTop <= 0) {
-                // Menambahkan gesekan (friction) agar tidak terlalu sensitif (dikali 0.35)
                 let pullDistance = diff * 0.35; 
                 
-                // Mencegah tarikan melampaui batas maksimal layar secara ekstrem
                 if (pullDistance > 90) pullDistance = 90 + (pullDistance - 90) * 0.1;
                 
                 if (pullDistance > 10) {
@@ -1217,7 +1213,7 @@
 
                     if (pullDistance >= 60) {
                         ptrText.textContent = "Lepaskan untuk memuat";
-                        ptrIcon.style.color = "#10b981"; // Berubah hijau siap memuat
+                        ptrIcon.style.color = "#10b981";
                     } else {
                         ptrText.textContent = "Tarik untuk memuat...";
                         ptrIcon.style.color = "#3b82f6";
@@ -1234,7 +1230,6 @@
             const diff = ptrCurrentY - ptrStartY;
             const pullDistance = diff * 0.35;
 
-            // Trigger Load jika melewati batas 60px
             if (pullDistance >= 60) {
                 isPtrRefreshing = true;
                 ptrContainer.classList.remove('ptr-pulling');
@@ -1244,7 +1239,6 @@
                 ptrContainer.style.transform = `translateY(60px)`;
                 ptrContainer.style.transition = `transform 0.3s ease`;
 
-                // Simulasi delay sinkronisasi (bisa diubah logic location.reload() asli)
                 setTimeout(() => {
                     ptrContainer.style.transform = `translateY(0)`;
                     ptrText.textContent = "Berhasil diperbarui";
@@ -1258,7 +1252,6 @@
                 }, 1500);
 
             } else {
-                // Jika tarikan belum penuh, batalkan dan kembalikan ke semula
                 ptrContainer.style.transform = `translateY(0)`;
                 ptrContainer.classList.remove('ptr-pulling');
             }
@@ -1332,14 +1325,14 @@
   </script>
 
   <!-- ==============================================================================
-     LOGIKA BARU TOMBOL BACK FISIK (HARDWARE) ANTI-CRASH UNTUK LAYER & POP-UP MULTIPLE
+     LOGIKA NAVIGASI TOMBOL BACK FISIK (HANYA MEREKAM SUB-HALAMAN, BUKAN POP-UP/MODAL)
   =================================================================================== -->
   <script>
   document.addEventListener("DOMContentLoaded", () => {
-      const overlaySelectors = ['.page-overlay', '.modal-overlay'];
+      // HANYA amati sub-halaman (.page-overlay), ABAIKAN modal/pop-up (.modal-overlay)
+      const overlaySelectors = ['.page-overlay'];
       let overlayStack = [];
 
-      // Mendaftarkan perubahan CSS untuk mengontrol history state
       const observer = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
               if (mutation.attributeName === 'style' || mutation.attributeName === 'class') {
@@ -1357,9 +1350,9 @@
                       target.removeAttribute('data-in-history');
                       overlayStack = overlayStack.filter(el => el.id !== target.id);
                       
-                      // Tarik mundur history JIKA saat ini kita memang berada pada state element yang baru ditutup
+                      // Mundurkan history HANYA jika penutupan terjadi saat halaman tersebut di posisi paling atas history state
                       if (history.state && history.state.overlayId === target.id) {
-                          window.__isProgrammaticBack = true; // Tandai agar popstate tidak ter-trigger beruntun
+                          window.__isProgrammaticBack = true;
                           history.back();
                           setTimeout(() => { window.__isProgrammaticBack = false; }, 100); 
                       }
@@ -1368,27 +1361,26 @@
           });
       });
 
-      // Awasi seluruh modal & overlay
+      // Awasi khusus elemen-elemen sub-halaman (.page-overlay)
       const overlays = document.querySelectorAll(overlaySelectors.join(', '));
       overlays.forEach(overlay => {
           observer.observe(overlay, { attributes: true, attributeFilter: ['style', 'class'] });
       });
 
-      // Menangkap eksekusi fisik saat pengguna menekan usap layar/tombol back HP
+      // Tangkap tombol back fisik perangkat (Hardware Back Button)
       window.addEventListener('popstate', (event) => {
-          if (window.__isProgrammaticBack) return; // Mencegah looping akibat script di atas
+          if (window.__isProgrammaticBack) return;
 
           if (overlayStack.length > 0) {
-              // Ambil modal/pop-up yang tumpukannya paling atas
               const targetOverlay = overlayStack.pop();
               targetOverlay.removeAttribute('data-in-history');
               
-              // Cari tombol penutup dalam modal tersebut (termasuk X di artikel)
-              const closeBtn = targetOverlay.querySelector('.back-btn, .modal-close-btn, .btn-modal-cancel');
+              // Cari tombol kembali sub-halaman
+              const closeBtn = targetOverlay.querySelector('.back-btn');
               
               if (closeBtn) {
                   window.__isProgrammaticBack = true;
-                  closeBtn.click(); // Mengeksekusi penutupan sesuai animasi asli (satu per satu secara gradual)
+                  closeBtn.click();
                   setTimeout(() => { window.__isProgrammaticBack = false; }, 100);
               } else {
                   targetOverlay.style.display = 'none';
