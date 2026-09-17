@@ -5,195 +5,197 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MoneyChanger UI - Premium V2</title>
   
- <!-- PWA Meta Tags -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#3b82f6">
-<link rel="apple-touch-icon" href="icon-192x192.png">
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#3b82f6">
+  <link rel="apple-touch-icon" href="icon-192x192.png">
   
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/glideaceh/AOLMoneyChangerNew/style.css"> 
   <style>
   /* ==========================================
-   PWA FLOATING INSTALL CARD CSS (UPDATED MODERN & SMOOTH)
-========================================== */
-.pwa-floating-card {
-    position: fixed;
-    bottom: -150px;
-    left: 50%;
-    transform: translateX(-50%) scale(0.95);
-    background: linear-gradient(990deg,rgba(180, 250, 209, 1) 50%, rgba(242, 236, 184, 1) 100%);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    padding: 1.25rem;
-    border-radius: 1.5rem;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255,255,255,0.5) inset;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    z-index: 99999999;
-    width: 92%;
-    max-width: 400px;
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    opacity: 0;
-    visibility: hidden;
-}
+     PWA FLOATING INSTALL CARD CSS 
+  ========================================== */
+  .pwa-floating-card {
+      position: fixed;
+      bottom: -150px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      background: linear-gradient(990deg,rgba(180, 250, 209, 1) 50%, rgba(242, 236, 184, 1) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 1.25rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255,255,255,0.5) inset;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      z-index: 99999999;
+      width: 92%;
+      max-width: 400px;
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      opacity: 0;
+      visibility: hidden;
+  }
 
-.pwa-floating-card.show {
-    bottom: 30px;
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
-    visibility: visible;
-}
+  .pwa-floating-card.show {
+      bottom: 30px;
+      transform: translateX(-50%) scale(1);
+      opacity: 1;
+      visibility: visible;
+  }
 
-.pwa-content {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-}
+  .pwa-content {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+  }
 
-.pwa-icon {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    font-weight: 800;
-    border-radius: 1.25rem;
-    flex-shrink: 0;
-    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
-    animation: pulse-glow 2s infinite;
-}
+  .pwa-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 800;
+      border-radius: 1.25rem;
+      flex-shrink: 0;
+      box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+      animation: pulse-glow 2s infinite;
+  }
 
-@keyframes pulse-glow {
-    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
-    70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-}
+  @keyframes pulse-glow {
+      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+  }
 
-.pwa-text h4 {
-    margin: 0 0 0.4rem 0;
-    font-size: 1.15rem;
-    color: #0f172a;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-}
+  .pwa-text h4 {
+      margin: 0 0 0.4rem 0;
+      font-size: 1.15rem;
+      color: #0f172a;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+  }
 
-.pwa-text p {
-    margin: 0;
-    font-size: 0.85rem;
-    color: #475569;
-    line-height: 1.5;
-}
+  .pwa-text p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #475569;
+      line-height: 1.5;
+  }
 
-.pwa-actions {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: flex-end;
-}
+  .pwa-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+  }
 
-.pwa-btn {
-    padding: 0.7rem 1.5rem;
-    border-radius: 0.75rem;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    border: none;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+  .pwa-btn {
+      padding: 0.7rem 1.5rem;
+      border-radius: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+  }
 
-.pwa-cancel {
-    background: rgba(255, 255, 255, 1);
-    color: #475569;
-}
+  .pwa-cancel {
+      background: rgba(255, 255, 255, 1);
+      color: #475569;
+  }
 
-.pwa-cancel:hover {
-    background: #32CD32;
-    color: #fff;
-}
+  .pwa-cancel:hover {
+      background: #32CD32;
+      color: #fff;
+  }
 
-.pwa-install {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: white;
-    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
-}
+  .pwa-install {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+  }
 
-.pwa-install:hover {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
-}
+  .pwa-install:hover {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+  }
 
-@media (min-width: 769px) {
-    .pwa-floating-card, .pwa-floating-card.show {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-    }
-}
+  @media (min-width: 769px) {
+      .pwa-floating-card, .pwa-floating-card.show {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+      }
+  }
 
-/* ==========================================
-   PWA PULL TO REFRESH CSS
-========================================== */
-.ptr-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 99999;
-    pointer-events: none;
-    transform: translateY(-100%);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.ptr-icon {
-    background: #fff;
-    color: #3b82f6;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    font-size: 1.25rem;
-    transition: transform 0.1s ease-out;
-}
-
-body.ptr-refreshing .ptr-container {
-    transform: translateY(20px);
-}
-
-body.ptr-refreshing .ptr-icon {
-    animation: ptr-spin 0.8s linear infinite;
-    color: #10b981;
-}
-
-@keyframes ptr-spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+  /* ==========================================
+     PULL TO REFRESH MODERN CSS (BARU)
+  ========================================== */
+  .ptr-container {
+      position: absolute;
+      top: -65px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      pointer-events: none;
+  }
+  .ptr-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 8px 20px;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      transform: scale(0.85);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .ptr-icon-wrap {
+      color: #3b82f6;
+      font-size: 1.15rem;
+      transition: transform 0.1s linear, color 0.3s ease;
+  }
+  .ptr-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #1e293b;
+  }
+  .ptr-pulling .ptr-content {
+      opacity: 1;
+      transform: scale(1);
+  }
+  .ptr-refreshing .ptr-content {
+      opacity: 1;
+      transform: scale(1);
+  }
+  .ptr-refreshing .ptr-icon-wrap i {
+      animation: ptr-spin 0.8s linear infinite;
+  }
+  @keyframes ptr-spin {
+      100% { transform: rotate(360deg); }
+  }
   </style>
 </head>
 <body>
-
-    <!-- KOMPONEN PULL TO REFRESH -->
-    <div id="ptr-container" class="ptr-container">
-        <div class="ptr-icon" id="ptr-icon"><i class="fa-solid fa-arrows-rotate"></i></div>
-    </div>
-
     <!-- KOMPONEN PWA FLOATING CARD -->
     <div id="pwa-install-card" class="pwa-floating-card">
         <div class="pwa-content">
@@ -203,7 +205,6 @@ body.ptr-refreshing .ptr-icon {
                 <p>Pasang aplikasi ini ke layar utama untuk akses instan yang lebih lancar.</p>
             </div>
         </div>
-        
         <div class="pwa-actions">
             <button id="pwa-btn-cancel" class="pwa-btn pwa-cancel">Nanti</button>
             <button id="pwa-btn-install" class="pwa-btn pwa-install"><i class="fas fa-download"></i> Install</button>
@@ -211,7 +212,6 @@ body.ptr-refreshing .ptr-icon {
     </div>
 
   <div class="app-container">
-    
     <div id="floating-toast" class="toast-notif">
         <i class="fa-solid fa-circle-exclamation"></i>
         <span id="toast-message">Notifikasi</span>
@@ -255,7 +255,6 @@ body.ptr-refreshing .ptr-icon {
                 </div>
                 <h3 class="modal-title">Verifikasi Email</h3>
                 <p class="modal-text">Masukkan kode OTP 6 digit yang telah dikirim ke email <strong id="display-reg-email" style="color:#2563eb;">-</strong>.<br><span style="font-size: 0.8rem; color: #ef4444; font-weight: 600;">Kode OTP berlaku 10 menit.</span></p>
-
                 <form id="form-register-otp" onsubmit="handleVerifyRegisterOTP(event)">
                     <div class="auth-input-group" style="text-align: left; margin-top: 1rem;">
                         <label class="auth-label">Kode OTP (6 Digit)</label>
@@ -280,15 +279,12 @@ body.ptr-refreshing .ptr-icon {
     <div id="forgot-password-modal" class="modal-overlay">
         <div class="modal-content forgot-modal-content">
             <button class="modal-close-btn" onclick="closeForgotPasswordModal()"><i class="fa-solid fa-xmark"></i></button>
-
-            <!-- STEP 1: MASUKKAN EMAIL -->
             <div id="forgot-step-1" class="forgot-step">
                 <div class="modal-icon" style="background: rgba(37,99,235,0.1); color: #2563eb; margin: 0 auto 1rem auto;">
                     <i class="fa-solid fa-key"></i>
                 </div>
                 <h3 class="modal-title">Lupa Password?</h3>
                 <p class="modal-text">Masukkan email terdaftar Anda. Kami akan mengirimkan kode OTP untuk verifikasi.</p>
-
                 <form id="form-forgot-request" onsubmit="handleSendOtp(event)">
                     <div class="auth-input-group" style="text-align: left; margin-top: 1.25rem;">
                         <label class="auth-label">Email Terdaftar</label>
@@ -302,15 +298,12 @@ body.ptr-refreshing .ptr-icon {
                     </button>
                 </form>
             </div>
-
-            <!-- STEP 2: VERIFIKASI OTP & RESET PASSWORD -->
             <div id="forgot-step-2" class="forgot-step" style="display: none;">
                 <div class="modal-icon" style="background: rgba(16,185,129,0.1); color: #10b981; margin: 0 auto 1rem auto;">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
                 <h3 class="modal-title">Reset Password</h3>
                 <p class="modal-text">Masukkan kode OTP yang telah dikirim ke email <strong id="display-otp-email" style="color:#2563eb;">-</strong></p>
-
                 <form id="form-forgot-reset" onsubmit="handleResetPassword(event)">
                     <div class="auth-input-group" style="text-align: left; margin-top: 1rem;">
                         <label class="auth-label">Kode OTP (6 Digit)</label>
@@ -347,7 +340,7 @@ body.ptr-refreshing .ptr-icon {
         </div>
     </div>
 
-    <!-- VIEW AUTH (LOGIN & REGISTER) -->
+    <!-- VIEW AUTH -->
     <div id="auth-view" class="auth-view-container">
         <div id="auth-loading" class="auth-loading">
             <i class="fa-solid fa-circle-notch fa-spin fa-3x" style="color:#2563eb;"></i>
@@ -370,6 +363,7 @@ body.ptr-refreshing .ptr-icon {
                         <input type="text" id="log-user" class="auth-input" placeholder="contoh: budi123" required oninput="this.value = this.value.toLowerCase()">
                     </div>
                 </div>
+                
                 <div class="auth-input-group">
                     <label class="auth-label">Password</label>
                     <div class="auth-input-wrapper">
@@ -381,9 +375,11 @@ body.ptr-refreshing .ptr-icon {
                         <span class="auth-link" style="font-size: 0.825rem;" onclick="openForgotPasswordModal()">Lupa Password?</span>
                     </div>
                 </div>
+                
                 <button type="submit" class="btn-primary btn-auth-gradient shiny-sweep" style="margin-top: 1.25rem; padding: 1rem;">
                     Masuk Sekarang <i class="fa-solid fa-right-to-bracket"></i>
                 </button>
+                
                 <p style="text-align: center; margin-top: 1.75rem; font-size: 0.875rem; color: #64748b;">
                     Belum punya akun? <span class="auth-link" onclick="switchToRegister()">Daftar di sini</span>
                 </p>
@@ -444,7 +440,16 @@ body.ptr-refreshing .ptr-icon {
     </div>
 
     <!-- HALAMAN UTAMA / BERANDA -->
-    <div id="main-home-page" class="home-page no-scrollbar">
+    <div id="main-home-page" class="home-page no-scrollbar" style="position: relative;">
+      
+      <!-- PULL TO REFRESH MODERN AREA (HANYA DI HOME) -->
+      <div id="pull-to-refresh" class="ptr-container">
+        <div class="ptr-content">
+          <div class="ptr-icon-wrap"><i class="fa-solid fa-arrows-rotate"></i></div>
+          <span class="ptr-text">Tarik untuk memuat...</span>
+        </div>
+      </div>
+
       <header class="header">
         <div class="brand">
           <div class="brand-icon shiny-sweep">
@@ -509,7 +514,7 @@ body.ptr-refreshing .ptr-icon {
       </div>
     </div>
     
-    <!-- HALAMAN TAB TRANSAKSI -->
+    <!-- HALAMAN TAB TRANSAKSI (KHUSUS PENDING & PROSES) -->
     <div id="main-transaksi-aktif-page" class="transaksi-page no-scrollbar" style="display: none;">
         <div class="tx-sticky-top">
             <header class="tx-header">
@@ -520,7 +525,7 @@ body.ptr-refreshing .ptr-icon {
         </div>
     </div>
 
-   <!-- HALAMAN TAB RIWAYAT -->
+   <!-- HALAMAN TAB RIWAYAT (KHUSUS SELESAI) -->
     <div id="main-transaksi-page" class="transaksi-page no-scrollbar" style="display: none;">
         <div class="tx-sticky-top">
             <header class="tx-header">
@@ -597,36 +602,37 @@ body.ptr-refreshing .ptr-icon {
             <p style="color: #64748b; font-size: 0.85rem; margin: 0;">Rekening ini digunakan untuk menerima dana hasil penjualan valas Anda.</p>
         </div>
         
-<div class="atm-card-wrapper fade-in-up delay-1">
-    <div class="modern-atm-card" id="atm-card-element">
-        <div class="atm-loading-overlay" id="atm-loading-overlay">
-            <div class="atm-scan-line"></div>
-            <div class="atm-loading-icon-wrapper">
-                <div class="atm-loading-spinner"></div>
-                <i class="fa-solid fa-microchip"></i>
-            </div>
-            <div class="atm-loading-text">MEMUAT DATA...</div>
-        </div>
-        <div class="atm-bg-orb-1"></div>
-        <div class="atm-bg-orb-2"></div>
-        <div class="atm-content">
-            <div class="atm-header-top">
-                <span class="atm-bank-name" id="display-bank-name">BANK KAMU</span>
-                <i class="fa-solid fa-sim-card atm-chip-icon" style="transform: rotate(90deg);"></i>
-            </div>
-            <div class="atm-number-display" id="display-rek-number">**** **** **** ****</div>
-            <div class="atm-footer-info">
-                <div>
-                    <div class="atm-label-sm">CARD HOLDER</div>
-                    <div class="atm-value-lg" id="display-holder-name">NAMA PENGGUNA</div>
+       <!-- ATM CARD VIEW MODERN -->
+        <div class="atm-card-wrapper fade-in-up delay-1">
+            <div class="modern-atm-card" id="atm-card-element">
+                <div class="atm-loading-overlay" id="atm-loading-overlay">
+                    <div class="atm-scan-line"></div>
+                    <div class="atm-loading-icon-wrapper">
+                        <div class="atm-loading-spinner"></div>
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <div class="atm-loading-text">MEMUAT DATA...</div>
                 </div>
-                <div style="opacity: 0.8;">
-                    <i class="fa-brands fa-cc-mastercard" style="font-size: 2.2rem;"></i>
+                <div class="atm-bg-orb-1"></div>
+                <div class="atm-bg-orb-2"></div>
+                <div class="atm-content">
+                    <div class="atm-header-top">
+                        <span class="atm-bank-name" id="display-bank-name">BANK KAMU</span>
+                        <i class="fa-solid fa-sim-card atm-chip-icon" style="transform: rotate(90deg);"></i>
+                    </div>
+                    <div class="atm-number-display" id="display-rek-number">**** **** **** ****</div>
+                    <div class="atm-footer-info">
+                        <div>
+                            <div class="atm-label-sm">CARD HOLDER</div>
+                            <div class="atm-value-lg" id="display-holder-name">NAMA PENGGUNA</div>
+                        </div>
+                        <div style="opacity: 0.8;">
+                            <i class="fa-brands fa-cc-mastercard" style="font-size: 2.2rem;"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
         
         <button class="btn-edit-rek-toggle fade-in-up delay-2" onclick="toggleEditRekForm()">
             <i class="fa-solid fa-pen-to-square"></i> Edit Informasi Rekening
@@ -681,12 +687,14 @@ body.ptr-refreshing .ptr-icon {
             <button onclick="closeInformasi()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
             <h2 class="overlay-title">Informasi & Edukasi Valas</h2>
         </header>
+
         <div class="overlay-content no-scrollbar" style="padding: 1.25rem;">
             <div class="info-header-banner fade-in-up">
                 <div class="info-banner-badge"><i class="fa-solid fa-newspaper"></i> Update Terkini</div>
                 <h3 class="info-banner-title">Pusat Informasi & Panduan Valas</h3>
                 <p class="info-banner-desc">Dapatkan insight pergerakan kurs mata uang, analisis pasar finansial, dan panduan transaksi jual beli valas terlengkap.</p>
             </div>
+
             <div class="info-filter-container fade-in-up delay-1">
                 <button class="info-filter-pill active" onclick="filterArticles('semua', this)">Semua</button>
                 <button class="info-filter-pill" onclick="filterArticles('kurs', this)"><i class="fa-solid fa-chart-line"></i> Berita Kurs</button>
@@ -712,6 +720,7 @@ body.ptr-refreshing .ptr-icon {
                         </button>
                     </div>
                 </div>
+
                 <div class="info-card fade-in-up delay-2" data-cat="panduan">
                     <div class="info-card-top">
                         <span class="info-tag tag-green">Panduan Beli</span>
@@ -729,6 +738,7 @@ body.ptr-refreshing .ptr-icon {
                         </button>
                     </div>
                 </div>
+
                 <div class="info-card fade-in-up delay-2" data-cat="panduan">
                     <div class="info-card-top">
                         <span class="info-tag tag-purple">Panduan Jual</span>
@@ -746,6 +756,7 @@ body.ptr-refreshing .ptr-icon {
                         </button>
                     </div>
                 </div>
+
                 <div class="info-card fade-in-up delay-3" data-cat="tips">
                     <div class="info-card-top">
                         <span class="info-tag tag-orange">Tips Finansial</span>
@@ -818,12 +829,11 @@ body.ptr-refreshing .ptr-icon {
         <div class="modal-content forgot-modal-content" style="max-height: 85vh; overflow-y: auto; text-align: left; padding: 1.5rem;">
             <button class="modal-close-btn" onclick="closeArticleModal()"><i class="fa-solid fa-xmark"></i></button>
             <div id="article-modal-body" class="article-modal-body">
-                <!-- Konten dinamis diisi JS -->
+                <!-- Konten dinamis -->
             </div>
         </div>
     </div>
 
-    <!-- HALAMAN BELI VALAS -->
     <div id="page-beli-valas" class="page-overlay">
         <header class="overlay-header">
             <button onclick="closeBeliValas()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
@@ -931,7 +941,6 @@ body.ptr-refreshing .ptr-icon {
         </div>
     </div>
 
-    <!-- HALAMAN PEMBAYARAN -->
     <div id="page-detail-pembayaran" class="page-overlay">
         <header class="overlay-header">
             <button onclick="closeAllToHome()" class="back-btn"><i class="fa-solid fa-xmark"></i></button>
@@ -947,6 +956,7 @@ body.ptr-refreshing .ptr-icon {
                     </div>
                 </div>
             </div>
+
             <div class="receipt-card fade-in-up delay-1">
                 <div class="receipt-header"><h3>Detail Pesanan</h3><p id="det-trx-id">Trx ID: AMC000000X</p></div>
                 <div class="receipt-row"><span class="receipt-label">Mata Uang</span><span class="receipt-value" id="det-mata-uang">USD</span></div>
@@ -972,10 +982,12 @@ body.ptr-refreshing .ptr-icon {
             <button onclick="closePaymentPage()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
             <h2 class="overlay-title">Pembayaran</h2>
         </header>
+        
         <div class="capsule-tab-container fade-in-up">
             <button id="tab-btn-rupiah" class="capsule-tab active" onclick="switchPaymentTab('rupiah')">Rekening Rupiah</button>
             <button id="tab-btn-dollar" class="capsule-tab" onclick="switchPaymentTab('dollar')">Rekening Dollar</button>
         </div>
+
         <div class="overlay-content no-scrollbar" style="padding-bottom: 0;">
             <div id="content-rupiah" class="payment-tab-content fade-in-up delay-1">
                 <div class="bank-info-card">
@@ -993,6 +1005,7 @@ body.ptr-refreshing .ptr-icon {
                     </div>
                 </div>
             </div>
+
             <div id="content-dollar" class="payment-tab-content fade-in-up delay-1" style="display: none;">
                 <div class="modern-dollar-card">
                     <div class="dollar-card-header">
@@ -1012,6 +1025,7 @@ body.ptr-refreshing .ptr-icon {
                     </div>
                 </div>
             </div>
+
             <div class="upload-section fade-in-up delay-2" style="margin-top: 1.5rem;">
                 <h4 class="sec-title" style="margin-bottom: 0.75rem;">Upload Bukti Pembayaran</h4>
                 <div class="upload-area">
@@ -1022,6 +1036,7 @@ body.ptr-refreshing .ptr-icon {
                 </div>
             </div>
         </div>
+
         <div id="bottom-bar-konfirmasi" class="overlay-bottom-bar fade-in-up delay-2">
             <button id="btn-konfirmasi-action" class="btn-konfirmasi-keren" onclick="prosesKonfirmasi()">
                 Konfirmasi Pembayaran <i class="fa-solid fa-check-double icon-check"></i>
@@ -1151,14 +1166,113 @@ body.ptr-refreshing .ptr-icon {
     </div>
 </div>
 
-  </div> <!-- End app-container -->
+  </div>
   
   <script src="https://cdn.jsdelivr.net/gh/glideaceh/AOLMoneyChangerNew/script.js"></script>
-  
+
   <!-- ==============================================================================
-     SCRIPT 1: PWA INSTALL PROMPT
+     LOGIKA PULL-TO-REFRESH (DI KHUSUSKAN UNTUK HOME SAJA DENGAN TARIKAN LEMBUT)
   =================================================================================== -->
   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const homePage = document.getElementById('main-home-page');
+        const ptrContainer = document.getElementById('pull-to-refresh');
+        const ptrIcon = ptrContainer.querySelector('.ptr-icon-wrap i');
+        const ptrText = ptrContainer.querySelector('.ptr-text');
+        
+        let ptrStartY = 0;
+        let ptrCurrentY = 0;
+        let isPtrRefreshing = false;
+        let isAtTop = true;
+
+        homePage.addEventListener('touchstart', (e) => {
+            // Hanya aktif jika user berada di paling atas halaman
+            if (homePage.scrollTop <= 0) {
+                isAtTop = true;
+                ptrStartY = e.touches[0].clientY;
+            } else {
+                isAtTop = false;
+                ptrStartY = 0;
+            }
+        }, { passive: true });
+
+        homePage.addEventListener('touchmove', (e) => {
+            if (!isAtTop || isPtrRefreshing || ptrStartY === 0) return;
+            
+            ptrCurrentY = e.touches[0].clientY;
+            const diff = ptrCurrentY - ptrStartY;
+            
+            // Tarik ke bawah
+            if (diff > 0 && homePage.scrollTop <= 0) {
+                // Menambahkan gesekan (friction) agar tidak terlalu sensitif (dikali 0.35)
+                let pullDistance = diff * 0.35; 
+                
+                // Mencegah tarikan melampaui batas maksimal layar secara ekstrem
+                if (pullDistance > 90) pullDistance = 90 + (pullDistance - 90) * 0.1;
+                
+                if (pullDistance > 10) {
+                    ptrContainer.classList.add('ptr-pulling');
+                    ptrContainer.style.transform = `translateY(${pullDistance}px)`;
+                    ptrIcon.style.transform = `rotate(${pullDistance * 3}deg)`;
+
+                    if (pullDistance >= 60) {
+                        ptrText.textContent = "Lepaskan untuk memuat";
+                        ptrIcon.style.color = "#10b981"; // Berubah hijau siap memuat
+                    } else {
+                        ptrText.textContent = "Tarik untuk memuat...";
+                        ptrIcon.style.color = "#3b82f6";
+                    }
+                }
+                
+                if (e.cancelable) e.preventDefault();
+            }
+        }, { passive: false });
+
+        homePage.addEventListener('touchend', () => {
+            if (!isAtTop || isPtrRefreshing || ptrStartY === 0) return;
+            
+            const diff = ptrCurrentY - ptrStartY;
+            const pullDistance = diff * 0.35;
+
+            // Trigger Load jika melewati batas 60px
+            if (pullDistance >= 60) {
+                isPtrRefreshing = true;
+                ptrContainer.classList.remove('ptr-pulling');
+                ptrContainer.classList.add('ptr-refreshing');
+                
+                ptrText.textContent = "Memuat ulang...";
+                ptrContainer.style.transform = `translateY(60px)`;
+                ptrContainer.style.transition = `transform 0.3s ease`;
+
+                // Simulasi delay sinkronisasi (bisa diubah logic location.reload() asli)
+                setTimeout(() => {
+                    ptrContainer.style.transform = `translateY(0)`;
+                    ptrText.textContent = "Berhasil diperbarui";
+                    ptrIcon.style.color = "#3b82f6";
+                    
+                    setTimeout(() => {
+                        ptrContainer.classList.remove('ptr-refreshing');
+                        isPtrRefreshing = false;
+                        ptrContainer.style.transition = ``; 
+                    }, 300);
+                }, 1500);
+
+            } else {
+                // Jika tarikan belum penuh, batalkan dan kembalikan ke semula
+                ptrContainer.style.transform = `translateY(0)`;
+                ptrContainer.classList.remove('ptr-pulling');
+            }
+            
+            ptrStartY = 0;
+            ptrCurrentY = 0;
+        });
+    });
+  </script>
+
+  <script>
+  // ==========================================
+  // PWA INSTALL PROMPT
+  // ==========================================
   if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
           navigator.serviceWorker.register('./service-worker.js')
@@ -1170,7 +1284,6 @@ body.ptr-refreshing .ptr-icon {
   const pwaCard = document.getElementById('pwa-install-card');
   const btnInstall = document.getElementById('pwa-btn-install');
   const btnCancel = document.getElementById('pwa-btn-cancel');
-
   const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   const isInstalled = localStorage.getItem('pwa_installed') === 'true';
@@ -1219,143 +1332,67 @@ body.ptr-refreshing .ptr-icon {
   </script>
 
   <!-- ==============================================================================
-     SCRIPT 2: PULL TO REFRESH LOGIC (BARU)
-  =================================================================================== -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        let startY = 0;
-        let currentY = 0;
-        let isPulling = false;
-        let isRefreshing = false;
-        const ptrContainer = document.getElementById('ptr-container');
-        const ptrIcon = document.getElementById('ptr-icon');
-
-        document.addEventListener('touchstart', (e) => {
-            // Hanya aktif jika layar berada di posisi paling atas persis
-            if (window.scrollY === 0 && !isRefreshing) {
-                startY = e.touches[0].clientY;
-                isPulling = true;
-                ptrContainer.style.transition = 'none'; // Hapus transisi agar tarikan mulus
-            }
-        }, { passive: true });
-
-        document.addEventListener('touchmove', (e) => {
-            if (!isPulling || isRefreshing) return;
-            currentY = e.touches[0].clientY;
-            const pullDistance = currentY - startY;
-
-            // Jika ditarik ke bawah
-            if (pullDistance > 0 && window.scrollY === 0) {
-                const moveY = Math.min(pullDistance * 0.4, 80); // Batas maksimal turun
-                ptrContainer.style.transform = `translateY(${moveY - 70}px)`; // -70px adalah posisi sembunyi
-                ptrIcon.style.transform = `rotate(${pullDistance}deg)`;
-            }
-        }, { passive: true });
-
-        document.addEventListener('touchend', () => {
-            if (!isPulling || isRefreshing) return;
-            isPulling = false;
-            ptrContainer.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            
-            const pullDistance = currentY - startY;
-            
-            // Jika ditarik cukup jauh, lakukan refresh
-            if (pullDistance > 75) {
-                isRefreshing = true;
-                document.body.classList.add('ptr-refreshing');
-                ptrContainer.style.transform = `translateY(20px)`;
-                
-                // Reload halaman
-                setTimeout(() => {
-                    window.location.reload();
-                }, 800);
-            } else {
-                // Batal ditarik
-                ptrContainer.style.transform = `translateY(-100%)`;
-            }
-        });
-    });
-  </script>
-
-  <!-- ==============================================================================
-     SCRIPT 3: HARDWARE BACK BUTTON INTERCEPT (PERBAIKAN DOUBLE MODAL)
+     LOGIKA BARU TOMBOL BACK FISIK (HARDWARE) ANTI-CRASH UNTUK LAYER & POP-UP MULTIPLE
   =================================================================================== -->
   <script>
   document.addEventListener("DOMContentLoaded", () => {
-      // Daftar susunan modal/overlay (berurutan)
-      let activeModals = [];
-      // Bendera (flag) agar sistem back fisik tidak bertabrakan dengan klik tombol silang
-      let isSystemBack = false;
+      const overlaySelectors = ['.page-overlay', '.modal-overlay'];
+      let overlayStack = [];
 
-      // 1. Pastikan ada riwayat state dasar saat pertama kali aplikasi dimuat
-      if (!history.state || history.state.page !== 'home') {
-          history.replaceState({ page: 'home' }, '', window.location.pathname);
-      }
-
-      // 2. Pantau semua elemen yang dimunculkan (display: flex/block)
+      // Mendaftarkan perubahan CSS untuk mengontrol history state
       const observer = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
               if (mutation.attributeName === 'style' || mutation.attributeName === 'class') {
                   const target = mutation.target;
-                  const isVisible = window.getComputedStyle(target).display !== 'none';
-                  const index = activeModals.indexOf(target.id);
-
-                  // JIKA MODAL DIBUKA (baru muncul di layar)
-                  if (isVisible && index === -1) {
-                      activeModals.push(target.id);
-                      // Injeksi state ke dalam tumpukan history browser
-                      history.pushState({ modal: target.id }, '', `#${target.id}`);
-                  } 
                   
-                  // JIKA MODAL DITUTUP (disembunyikan melalui tombol kembali di layar / UI)
-                  else if (!isVisible && index !== -1) {
-                      activeModals.splice(index, 1);
+                  const isVisible = window.getComputedStyle(target).display !== 'none';
+                  const inHistory = target.getAttribute('data-in-history') === 'true';
+
+                  if (isVisible && !inHistory) {
+                      target.setAttribute('data-in-history', 'true');
+                      overlayStack.push(target);
+                      history.pushState({ overlayId: target.id }, '', `#${target.id}`);
+                  }
+                  else if (!isVisible && inHistory) {
+                      target.removeAttribute('data-in-history');
+                      overlayStack = overlayStack.filter(el => el.id !== target.id);
                       
-                      // Jika ini penutupan manual lewat tombol layar, kita HAPUS tumpukan history-nya (mundurkan 1 langkah)
-                      // Tapi jangan lakukan ini jika perintah mundur datang dari tombol fisik HP
-                      if (!isSystemBack && history.state && history.state.modal === target.id) {
-                          isSystemBack = true; 
-                          history.back(); // Singkirkan '#' dari URL
-                          setTimeout(() => { isSystemBack = false; }, 150);
+                      // Tarik mundur history JIKA saat ini kita memang berada pada state element yang baru ditutup
+                      if (history.state && history.state.overlayId === target.id) {
+                          window.__isProgrammaticBack = true; // Tandai agar popstate tidak ter-trigger beruntun
+                          history.back();
+                          setTimeout(() => { window.__isProgrammaticBack = false; }, 100); 
                       }
                   }
               }
           });
       });
 
-      // Targetkan semua modal dan sub-halaman
-      const overlays = document.querySelectorAll('.page-overlay, .modal-overlay');
-      overlays.forEach(el => {
-          observer.observe(el, { attributes: true, attributeFilter: ['style', 'class'] });
+      // Awasi seluruh modal & overlay
+      const overlays = document.querySelectorAll(overlaySelectors.join(', '));
+      overlays.forEach(overlay => {
+          observer.observe(overlay, { attributes: true, attributeFilter: ['style', 'class'] });
       });
 
-      // 3. Eksekusi khusus saat Tombol Back Fisik HP / Usap Pinggir Layar ditekan
-      window.addEventListener('popstate', (e) => {
-          if (isSystemBack) return; // Abaikan jika ini hasil trigger history.back() script kita di atas
+      // Menangkap eksekusi fisik saat pengguna menekan usap layar/tombol back HP
+      window.addEventListener('popstate', (event) => {
+          if (window.__isProgrammaticBack) return; // Mencegah looping akibat script di atas
 
-          // Jika ada modal/halaman yang terdeteksi sedang aktif (terbuka)
-          if (activeModals.length > 0) {
-              isSystemBack = true; // Kunci sistem sejenak agar tidak loop
-
-              // Cari modal paling atas di dalam tumpukan (tidak menghapusnya dulu dari array, biarkan Observer yang atur)
-              const topModalId = activeModals[activeModals.length - 1]; 
-              const targetOverlay = document.getElementById(topModalId);
+          if (overlayStack.length > 0) {
+              // Ambil modal/pop-up yang tumpukannya paling atas
+              const targetOverlay = overlayStack.pop();
+              targetOverlay.removeAttribute('data-in-history');
               
-              if (targetOverlay) {
-                  // Cari tombol silang/batal/back bawaan di modal itu sendiri
-                  const closeBtn = targetOverlay.querySelector('.back-btn, .modal-close-btn, .btn-modal-cancel');
-                  
-                  if (closeBtn) {
-                      // Simulasikan klik pada tombol tersebut sehingga JS aslinya bekerja normal
-                      closeBtn.click();
-                  } else {
-                      // Fallback: Sembunyikan paksa jika tombol tak ditemukan
-                      targetOverlay.style.display = 'none';
-                  }
+              // Cari tombol penutup dalam modal tersebut (termasuk X di artikel)
+              const closeBtn = targetOverlay.querySelector('.back-btn, .modal-close-btn, .btn-modal-cancel');
+              
+              if (closeBtn) {
+                  window.__isProgrammaticBack = true;
+                  closeBtn.click(); // Mengeksekusi penutupan sesuai animasi asli (satu per satu secara gradual)
+                  setTimeout(() => { window.__isProgrammaticBack = false; }, 100);
+              } else {
+                  targetOverlay.style.display = 'none';
               }
-              
-              // Lepaskan kunci setelah sedikit jeda (menyesuaikan kecepatan animasi)
-              setTimeout(() => { isSystemBack = false; }, 150);
           }
       });
   });
