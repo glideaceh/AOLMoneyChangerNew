@@ -1,6 +1,6 @@
 {
   "name": "AOLMoney Changer User Pro",
-  "short_name": "AOLMoney Changer",
+  "short_name": "AOL MC",
   "description": "Aplikasi penukaran mata uang yang cepat, aman, dan mudah digunakan",
   "start_url": "./",
   "display": "standalone",
