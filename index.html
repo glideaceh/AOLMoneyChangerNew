@@ -1171,162 +1171,165 @@
 </div>
 
   </div>
+  
   <script src="https://cdn.jsdelivr.net/gh/glideaceh/AOLMoneyChangerNew/script.js"></script>
+  
   <script>
   // ==========================================
-// 5. PWA INSTALL PROMPT & SERVICE WORKER (UPDATED LOGIC)
-// ==========================================
+  // 5. PWA INSTALL PROMPT & SERVICE WORKER (UPDATED LOGIC)
+  // ==========================================
 
-// Daftarkan Service Worker
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js')
-            .catch(err => console.log('SW Registration Failed:', err));
-    });
-}
+  // Daftarkan Service Worker
+  if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./service-worker.js')
+              .catch(err => console.log('SW Registration Failed:', err));
+      });
+  }
 
-let deferredPrompt;
-const pwaCard = document.getElementById('pwa-install-card');
-const btnInstall = document.getElementById('pwa-btn-install');
-const btnCancel = document.getElementById('pwa-btn-cancel');
+  let deferredPrompt;
+  const pwaCard = document.getElementById('pwa-install-card');
+  const btnInstall = document.getElementById('pwa-btn-install');
+  const btnCancel = document.getElementById('pwa-btn-cancel');
 
-// Deteksi Device Mobile
-const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  // Deteksi Device Mobile
+  const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-// Deteksi apakah sedang berjalan di mode PWA (Standalone)
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  // Deteksi apakah sedang berjalan di mode PWA (Standalone)
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-// Deteksi apakah PWA sudah pernah diinstal (berdasarkan LocalStorage fallback)
-const isInstalled = localStorage.getItem('pwa_installed') === 'true';
+  // Deteksi apakah PWA sudah pernah diinstal (berdasarkan LocalStorage fallback)
+  const isInstalled = localStorage.getItem('pwa_installed') === 'true';
 
-// Mencegah dan menangkap event instal resmi (Android/Desktop)
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-});
+  // Mencegah dan menangkap event instal resmi (Android/Desktop)
+  window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+  });
 
-// Menangkap event saat aplikasi sukses diinstal oleh pengguna
-window.addEventListener('appinstalled', (evt) => {
-    // Kunci PWA Card agar tidak pernah tampil lagi
-    localStorage.setItem('pwa_user_installed', 'true');
-    if (pwaCard) pwaCard.classList.remove('show');
-});
+  // Menangkap event saat aplikasi sukses diinstal oleh pengguna
+  window.addEventListener('appinstalled', (evt) => {
+      // Kunci PWA Card agar tidak pernah tampil lagi
+      localStorage.setItem('pwa_user_installed', 'true');
+      if (pwaCard) pwaCard.classList.remove('show');
+  });
 
-// MEMAKSA NOTIFIKASI SELALU MUNCUL HANYA DI MOBILE & JIKA BELUM DIINSTAL:
-if (isMobile && !isStandalone && !isInstalled) {
-    setTimeout(() => {
-        if (pwaCard) pwaCard.classList.add('show');
-    }, 2000); // Muncul setelah 2 detik halaman termuat
-}
+  // MEMAKSA NOTIFIKASI SELALU MUNCUL HANYA DI MOBILE & JIKA BELUM DIINSTAL:
+  if (isMobile && !isStandalone && !isInstalled) {
+      setTimeout(() => {
+          if (pwaCard) pwaCard.classList.add('show');
+      }, 2000); // Muncul setelah 2 detik halaman termuat
+  }
 
-// Aksi ketika klik tombol INSTALL
-if(btnInstall) {
-    btnInstall.addEventListener('click', async () => {
-        if (deferredPrompt) {
-            // Memanggil pop-up install RESMI browser tanpa harus ke menu titik tiga
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            
-            if (outcome === 'accepted') {
-                pwaCard.classList.remove('show');
-                localStorage.setItem('pwa_installed', 'true');
-            }
-            deferredPrompt = null;
-        } else if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-            alert('Sistem Apple iOS membatasi instalasi otomatis.\\n\\nSilakan ketuk ikon "Share" (kotak dengan panah atas) di bar bawah Safari, lalu pilih "Add to Home Screen" (Tambahkan ke Layar Utama).');
-        } else {
-            alert('Aplikasi sudah terinstal, atau browser Anda tidak mendukung pop-up instalasi otomatis.');
-            pwaCard.classList.remove('show');
-            // Jika sudah tidak ada prompt dan bukan iOS, berarti kemungkinan besar sudah terinstal.
-            localStorage.setItem('pwa_installed', 'true'); 
-        }
-    });
-}
+  // Aksi ketika klik tombol INSTALL
+  if(btnInstall) {
+      btnInstall.addEventListener('click', async () => {
+          if (deferredPrompt) {
+              // Memanggil pop-up install RESMI browser tanpa harus ke menu titik tiga
+              deferredPrompt.prompt();
+              const { outcome } = await deferredPrompt.userChoice;
+              
+              if (outcome === 'accepted') {
+                  pwaCard.classList.remove('show');
+                  localStorage.setItem('pwa_installed', 'true');
+              }
+              deferredPrompt = null;
+          } else if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+              alert('Sistem Apple iOS membatasi instalasi otomatis.\n\nSilakan ketuk ikon "Share" (kotak dengan panah atas) di bar bawah Safari, lalu pilih "Add to Home Screen" (Tambahkan ke Layar Utama).');
+          } else {
+              alert('Aplikasi sudah terinstal, atau browser Anda tidak mendukung pop-up instalasi otomatis.');
+              pwaCard.classList.remove('show');
+              // Jika sudah tidak ada prompt dan bukan iOS, berarti kemungkinan besar sudah terinstal.
+              localStorage.setItem('pwa_installed', 'true'); 
+          }
+      });
+  }
 
-// Aksi ketika klik Nanti (Cancel)
-if(btnCancel) {
-    btnCancel.addEventListener('click', () => {
-        pwaCard.classList.remove('show');
-    });
-}
+  // Aksi ketika klik Nanti (Cancel)
+  if(btnCancel) {
+      btnCancel.addEventListener('click', () => {
+          pwaCard.classList.remove('show');
+      });
+  }
+  </script>
 
-// ==========================================
-// 6. FUNGSI TOMBOL BACK FISIK MOBILE (HARDWARE BACK SUPPORT)
-// ==========================================
-let isProgrammaticHistoryUpdate = false;
+  <!-- ==============================================================================
+     SCRIPT KHUSUS UNTUK INTERCEPT TOMBOL BACK FISIK (NATIVE APP EXPERIENCE)
+  =================================================================================== -->
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+      // Menargetkan semua elemen yang berfungsi sebagai halaman popup atau modal
+      const overlaySelectors = ['.page-overlay', '.modal-overlay'];
+      let overlayStack = [];
+      let isNavigatingBack = false;
 
-// MutationObserver secara otomatis memantau seluruh elemen saat overlay/modal terbuka
-const hwBackObserver = new MutationObserver((mutations) => {
-    for (let mutation of mutations) {
-        if (mutation.attributeName === 'class' || mutation.attributeName === 'style') {
-            const el = mutation.target;
-            
-            // Pastikan hanya memantau elemen overlay atau modal
-            if (!el.classList.contains('page-overlay') && !el.classList.contains('modal-overlay')) continue;
-            
-            // Cek status apakah sedang muncul atau tampil
-            const isOpen = el.classList.contains('active') || el.classList.contains('show') || el.style.display === 'flex' || el.style.display === 'block';
-            const oldStyle = mutation.oldValue || '';
-            const wasOpen = oldStyle.includes('active') || oldStyle.includes('show') || oldStyle.includes('display: flex') || oldStyle.includes('display: block');
-            
-            // Jika baru terbuka, tanamkan history ke dalam window / browser hp
-            if (isOpen && !wasOpen && !isProgrammaticHistoryUpdate) {
-                history.pushState({ isAppOverlayOpen: true, id: el.id }, "");
-            }
-        }
-    }
-});
+      // Membuat observer untuk memantau perubahan tampilan (terbuka/tertutup)
+      const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+              if (mutation.attributeName === 'style' || mutation.attributeName === 'class') {
+                  const target = mutation.target;
+                  
+                  // Mendeteksi apakah elemen saat ini sedang ditampilkan ke user
+                  const isVisible = window.getComputedStyle(target).display !== 'none';
+                  const inHistory = target.getAttribute('data-in-history') === 'true';
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Jalankan pantauan pada semua popup dan layer sub-halaman
-    const overlaysToObserve = document.querySelectorAll('.page-overlay, .modal-overlay');
-    overlaysToObserve.forEach(overlay => {
-        hwBackObserver.observe(overlay, { attributes: true, attributeOldValue: true, attributeFilter: ['class', 'style'] });
-    });
-    
-    // Saat user menekan tombol 'kembali / close' di layar aplikasi secara sadar (tangan)
-    // History disinkronisasi ke belakang 1 step agar tidak menumpuk error di tombol back hp
-    const closeButtons = document.querySelectorAll('.back-btn, .modal-close-btn, .btn-modal-cancel');
-    closeButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            // "e.isTrusted" memastikan klik adalah respon jari / mouse murni
-            if (e.isTrusted && history.state && history.state.isAppOverlayOpen) {
-                isProgrammaticHistoryUpdate = true;
-                history.back(); 
-                setTimeout(() => isProgrammaticHistoryUpdate = false, 100);
-            }
-        });
-    });
-});
+                  // KONDISI 1: Overlay/Modal baru saja dibuka
+                  if (isVisible && !inHistory) {
+                      target.setAttribute('data-in-history', 'true');
+                      overlayStack.push(target);
+                      // Injeksi state ke dalam history browser HP
+                      history.pushState({ overlayId: target.id }, '', `#${target.id}`);
+                  }
+                  
+                  // KONDISI 2: Overlay ditutup melalui tombol 'X' atau 'Kembali' di layar (UI)
+                  else if (!isVisible && inHistory) {
+                      target.removeAttribute('data-in-history');
+                      // Keluarkan elemen ini dari tumpukan (stack)
+                      overlayStack = overlayStack.filter(el => el.id !== target.id);
+                      
+                      // Sinkronkan history browser agar tombol back fisik tidak 'nyangkut'
+                      if (history.state && history.state.overlayId === target.id) {
+                          isNavigatingBack = true;
+                          history.back(); // Panggil fungsi back secara sistem
+                          
+                          // Reset flag setelah delay singkat untuk mencegah tumpang tindih fungsi popstate
+                          setTimeout(() => { isNavigatingBack = false; }, 100); 
+                      }
+                  }
+              }
+          });
+      });
 
-// Menangkap event popstate saat tombol fisik / hardware "Back" d hp ditekan
-window.addEventListener('popstate', (e) => {
-    isProgrammaticHistoryUpdate = true;
-    
-    // Kumpulkan semua sub-halaman & pop-up yang saat ini ada dalam keadaan terbuka
-    const openOverlays = Array.from(document.querySelectorAll('.page-overlay, .modal-overlay'))
-        .filter(el => el.classList.contains('active') || el.classList.contains('show') || el.style.display === 'flex' || el.style.display === 'block');
-    
-    // Jika ada halaman popup / overlay yang masih aktif...
-    if (openOverlays.length > 0) {
-        // Fokuskan tindakan ke elemen yang posisinya paling atas/terakhir dimuat di layar
-        const topMost = openOverlays[openOverlays.length - 1];
-        
-        // Cari tombol 'kembali' (close) bawaan yang ada pada overlay tersebut
-        const closeBtn = topMost.querySelector('.back-btn, .modal-close-btn, .btn-modal-cancel');
-        
-        if (closeBtn) {
-            // 'Tembak' (klik otomatis) ke tombol close tersebut agar script bawaan (.js) juga bekerja dengan alami menutup popup
-            closeBtn.click(); 
-        } else {
-            // Tutup paksa jika seandainya tombolnya tidak ketemu
-            topMost.classList.remove('active', 'show');
-            topMost.style.display = 'none';
-        }
-    }
-    
-    setTimeout(() => isProgrammaticHistoryUpdate = false, 100);
-});
-</script>
+      // Mulai memantau semua halaman & modal yang ada di HTML
+      const overlays = document.querySelectorAll(overlaySelectors.join(', '));
+      overlays.forEach(overlay => {
+          observer.observe(overlay, { attributes: true, attributeFilter: ['style', 'class'] });
+      });
+
+      // Menangkap eksekusi saat pengguna menekan tombol back fisik / usap layar back
+      window.addEventListener('popstate', (event) => {
+          // Abaikan eksekusi jika back ini dipicu dari tombol di layar (bukan fisik)
+          if (isNavigatingBack) return; 
+
+          // Cek apakah ada modal atau overlay yang sedang terbuka
+          if (overlayStack.length > 0) {
+              // Ambil modal yang paling atas (paling terakhir dibuka)
+              const targetOverlay = overlayStack.pop();
+              targetOverlay.removeAttribute('data-in-history');
+
+              // Cari tombol 'back' atau 'cancel' di dalam modal tersebut
+              const closeBtn = targetOverlay.querySelector('.back-btn, .modal-close-btn, .btn-modal-cancel');
+              
+              if (closeBtn) {
+                  // Simulasikan klik pada tombol tersebut agar semua animasi/JS asli tetap berjalan
+                  closeBtn.click();
+              } else {
+                  // Fallback: Jika tidak ada tombolnya, sembunyikan secara paksa
+                  targetOverlay.style.display = 'none';
+              }
+          }
+      });
+  });
+  </script>
 </body>
 </html>
