@@ -1219,7 +1219,7 @@ body.ptr-refreshing .ptr-icon {
   </script>
 
   <!-- ==============================================================================
-     SCRIPT 2: PULL TO REFRESH LOGIC (BARU)
+     SCRIPT 2: PULL TO REFRESH LOGIC (HANYA DI HALAMAN HOME)
   =================================================================================== -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -1230,12 +1230,27 @@ body.ptr-refreshing .ptr-icon {
         const ptrContainer = document.getElementById('ptr-container');
         const ptrIcon = document.getElementById('ptr-icon');
 
+        // Fungsi helper untuk memastikan pull-to-refresh hanya aktif di home dan tidak ada overlay/modal terbuka
+        function canPullToRefresh() {
+            const homePage = document.getElementById('main-home-page');
+            if (!homePage || window.getComputedStyle(homePage).display === 'none') {
+                return false;
+            }
+            const openOverlays = document.querySelectorAll('.page-overlay, .modal-overlay');
+            for (let el of openOverlays) {
+                const disp = window.getComputedStyle(el).display;
+                if (disp && disp !== 'none') {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         document.addEventListener('touchstart', (e) => {
-            // Hanya aktif jika layar berada di posisi paling atas persis
-            if (window.scrollY === 0 && !isRefreshing) {
+            if (canPullToRefresh() && window.scrollY === 0 && !isRefreshing) {
                 startY = e.touches[0].clientY;
                 isPulling = true;
-                ptrContainer.style.transition = 'none'; // Hapus transisi agar tarikan mulus
+                ptrContainer.style.transition = 'none'; 
             }
         }, { passive: true });
 
@@ -1244,10 +1259,9 @@ body.ptr-refreshing .ptr-icon {
             currentY = e.touches[0].clientY;
             const pullDistance = currentY - startY;
 
-            // Jika ditarik ke bawah
-            if (pullDistance > 0 && window.scrollY === 0) {
-                const moveY = Math.min(pullDistance * 0.4, 80); // Batas maksimal turun
-                ptrContainer.style.transform = `translateY(${moveY - 70}px)`; // -70px adalah posisi sembunyi
+            if (pullDistance > 0 && canPullToRefresh() && window.scrollY === 0) {
+                const moveY = Math.min(pullDistance * 0.4, 80); 
+                ptrContainer.style.transform = `translateY(${moveY - 70}px)`; 
                 ptrIcon.style.transform = `rotate(${pullDistance}deg)`;
             }
         }, { passive: true });
@@ -1259,18 +1273,15 @@ body.ptr-refreshing .ptr-icon {
             
             const pullDistance = currentY - startY;
             
-            // Jika ditarik cukup jauh, lakukan refresh
-            if (pullDistance > 75) {
+            if (pullDistance > 75 && canPullToRefresh()) {
                 isRefreshing = true;
                 document.body.classList.add('ptr-refreshing');
                 ptrContainer.style.transform = `translateY(20px)`;
                 
-                // Reload halaman
                 setTimeout(() => {
                     window.location.reload();
                 }, 800);
             } else {
-                // Batal ditarik
                 ptrContainer.style.transform = `translateY(-100%)`;
             }
         });
@@ -1278,21 +1289,17 @@ body.ptr-refreshing .ptr-icon {
   </script>
 
   <!-- ==============================================================================
-     SCRIPT 3: HARDWARE BACK BUTTON INTERCEPT (PERBAIKAN DOUBLE MODAL)
+     SCRIPT 3: HARDWARE BACK BUTTON & MODAL NAVIGATION INTERCEPT
   =================================================================================== -->
   <script>
   document.addEventListener("DOMContentLoaded", () => {
-      // Daftar susunan modal/overlay (berurutan)
       let activeModals = [];
-      // Bendera (flag) agar sistem back fisik tidak bertabrakan dengan klik tombol silang
-      let isSystemBack = false;
+      let isNavigatingBack = false;
 
-      // 1. Pastikan ada riwayat state dasar saat pertama kali aplikasi dimuat
       if (!history.state || history.state.page !== 'home') {
           history.replaceState({ page: 'home' }, '', window.location.pathname);
       }
 
-      // 2. Pantau semua elemen yang dimunculkan (display: flex/block)
       const observer = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
               if (mutation.attributeName === 'style' || mutation.attributeName === 'class') {
@@ -1300,63 +1307,48 @@ body.ptr-refreshing .ptr-icon {
                   const isVisible = window.getComputedStyle(target).display !== 'none';
                   const index = activeModals.indexOf(target.id);
 
-                  // JIKA MODAL DIBUKA (baru muncul di layar)
                   if (isVisible && index === -1) {
                       activeModals.push(target.id);
-                      // Injeksi state ke dalam tumpukan history browser
                       history.pushState({ modal: target.id }, '', `#${target.id}`);
-                  } 
-                  
-                  // JIKA MODAL DITUTUP (disembunyikan melalui tombol kembali di layar / UI)
-                  else if (!isVisible && index !== -1) {
+                  } else if (!isVisible && index !== -1) {
                       activeModals.splice(index, 1);
-                      
-                      // Jika ini penutupan manual lewat tombol layar, kita HAPUS tumpukan history-nya (mundurkan 1 langkah)
-                      // Tapi jangan lakukan ini jika perintah mundur datang dari tombol fisik HP
-                      if (!isSystemBack && history.state && history.state.modal === target.id) {
-                          isSystemBack = true; 
-                          history.back(); // Singkirkan '#' dari URL
-                          setTimeout(() => { isSystemBack = false; }, 150);
+                      if (!isNavigatingBack) {
+                          isNavigatingBack = true;
+                          history.back();
+                          setTimeout(() => { isNavigatingBack = false; }, 200);
                       }
                   }
               }
           });
       });
 
-      // Targetkan semua modal dan sub-halaman
       const overlays = document.querySelectorAll('.page-overlay, .modal-overlay');
       overlays.forEach(el => {
           observer.observe(el, { attributes: true, attributeFilter: ['style', 'class'] });
       });
 
-      // 3. Eksekusi khusus saat Tombol Back Fisik HP / Usap Pinggir Layar ditekan
       window.addEventListener('popstate', (e) => {
-          if (isSystemBack) return; // Abaikan jika ini hasil trigger history.back() script kita di atas
+          if (isNavigatingBack) return;
+          isNavigatingBack = true;
 
-          // Jika ada modal/halaman yang terdeteksi sedang aktif (terbuka)
           if (activeModals.length > 0) {
-              isSystemBack = true; // Kunci sistem sejenak agar tidak loop
-
-              // Cari modal paling atas di dalam tumpukan (tidak menghapusnya dulu dari array, biarkan Observer yang atur)
-              const topModalId = activeModals[activeModals.length - 1]; 
+              const topModalId = activeModals[activeModals.length - 1];
               const targetOverlay = document.getElementById(topModalId);
               
               if (targetOverlay) {
-                  // Cari tombol silang/batal/back bawaan di modal itu sendiri
                   const closeBtn = targetOverlay.querySelector('.back-btn, .modal-close-btn, .btn-modal-cancel');
-                  
                   if (closeBtn) {
-                      // Simulasikan klik pada tombol tersebut sehingga JS aslinya bekerja normal
                       closeBtn.click();
                   } else {
-                      // Fallback: Sembunyikan paksa jika tombol tak ditemukan
                       targetOverlay.style.display = 'none';
+                      activeModals.pop();
                   }
               }
-              
-              // Lepaskan kunci setelah sedikit jeda (menyesuaikan kecepatan animasi)
-              setTimeout(() => { isSystemBack = false; }, 150);
           }
+
+          setTimeout(() => {
+              isNavigatingBack = false;
+          }, 200);
       });
   });
   </script>
