@@ -1252,8 +1252,7 @@
       });
   }
   </script>
-
-  <!-- ==========================================
+<!-- ==========================================
      SCRIPT PULL TO REFRESH (TAMBAHAN BARU)
   ========================================== -->
   <script>
@@ -1359,7 +1358,6 @@
       }
   });
   </script>
-
   <!-- ==============================================================================
      SCRIPT KHUSUS UNTUK INTERCEPT TOMBOL BACK FISIK (NATIVE APP EXPERIENCE)
   =================================================================================== -->
@@ -1377,4 +1375,66 @@
                   const target = mutation.target;
                   
                   // Mendeteksi apakah elemen saat ini sedang ditampilkan ke user
-                  const isVisible =
+                  const isVisible = window.getComputedStyle(target).display !== 'none';
+                  const inHistory = target.getAttribute('data-in-history') === 'true';
+
+                  // KONDISI 1: Overlay/Modal baru saja dibuka
+                  if (isVisible && !inHistory) {
+                      target.setAttribute('data-in-history', 'true');
+                      overlayStack.push(target);
+                      // Injeksi state ke dalam history browser HP
+                      history.pushState({ overlayId: target.id }, '', `#${target.id}`);
+                  }
+                  
+                  // KONDISI 2: Overlay ditutup melalui tombol 'X' atau 'Kembali' di layar (UI)
+                  else if (!isVisible && inHistory) {
+                      target.removeAttribute('data-in-history');
+                      // Keluarkan elemen ini dari tumpukan (stack)
+                      overlayStack = overlayStack.filter(el => el.id !== target.id);
+                      
+                      // Sinkronkan history browser agar tombol back fisik tidak 'nyangkut'
+                      if (history.state && history.state.overlayId === target.id) {
+                          isNavigatingBack = true;
+                          history.back(); // Panggil fungsi back secara sistem
+                          
+                          // Reset flag setelah delay singkat untuk mencegah tumpang tindih fungsi popstate
+                          setTimeout(() => { isNavigatingBack = false; }, 100); 
+                      }
+                  }
+              }
+          });
+      });
+
+      // Mulai memantau semua halaman & modal yang ada di HTML
+      const overlays = document.querySelectorAll(overlaySelectors.join(', '));
+      overlays.forEach(overlay => {
+          observer.observe(overlay, { attributes: true, attributeFilter: ['style', 'class'] });
+      });
+
+      // Menangkap eksekusi saat pengguna menekan tombol back fisik / usap layar back
+      window.addEventListener('popstate', (event) => {
+          // Abaikan eksekusi jika back ini dipicu dari tombol di layar (bukan fisik)
+          if (isNavigatingBack) return; 
+
+          // Cek apakah ada modal atau overlay yang sedang terbuka
+          if (overlayStack.length > 0) {
+              // Ambil modal yang paling atas (paling terakhir dibuka)
+              const targetOverlay = overlayStack.pop();
+              targetOverlay.removeAttribute('data-in-history');
+
+              // Cari tombol 'back' atau 'cancel' di dalam modal tersebut
+              const closeBtn = targetOverlay.querySelector('.back-btn, .modal-close-btn, .btn-modal-cancel');
+              
+              if (closeBtn) {
+                  // Simulasikan klik pada tombol tersebut agar semua animasi/JS asli tetap berjalan
+                  closeBtn.click();
+              } else {
+                  // Fallback: Jika tidak ada tombolnya, sembunyikan secara paksa
+                  targetOverlay.style.display = 'none';
+              }
+          }
+      });
+  });
+  </script>
+</body>
+</html>
