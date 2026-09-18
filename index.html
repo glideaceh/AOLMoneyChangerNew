@@ -1252,6 +1252,58 @@
       });
   }
   </script>
+  
+  <script>
+      // 3. LOGIKA PULL TO REFRESH
+      let startY = 0, currentY = 0, isPulling = false;
+      const ptrContainer = document.getElementById('ptr-container');
+      const ptrBox = document.getElementById('ptr-box');
+      const ptrIcon = document.getElementById('ptr-icon');
+      const flashScreen = document.getElementById('screen-flash');
+      const PULL_THRESHOLD = 130; 
+
+      if (homePage && ptrContainer) {
+          homePage.addEventListener('touchstart', (e) => {
+              if (homePage.scrollTop <= 0) { startY = e.touches[0].clientY; isPulling = true; ptrContainer.style.transition = 'none'; }
+          }, { passive: true });
+
+          homePage.addEventListener('touchmove', (e) => {
+              if (!isPulling) return;
+              currentY = e.touches[0].clientY;
+              let pullDistance = currentY - startY;
+
+              if (pullDistance > 0 && homePage.scrollTop <= 0) {
+                  let resistance = pullDistance * 0.45;
+                  ptrContainer.style.transform = `translateY(${resistance}px)`;
+                  ptrBox.style.transform = `scale(${Math.min(resistance / 60, 1)})`;
+                  ptrIcon.style.transform = `rotate(${resistance * 2.5}deg)`;
+                  if (e.cancelable) e.preventDefault();
+              }
+          }, { passive: false });
+
+          homePage.addEventListener('touchend', () => {
+              if (!isPulling) return;
+              isPulling = false;
+              let pullDistance = currentY - startY;
+              ptrContainer.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+              if (pullDistance > PULL_THRESHOLD) {
+                  ptrContainer.style.transform = 'translateY(80px)';
+                  ptrBox.classList.add('refreshing');
+                  setTimeout(() => {
+                      flashScreen.classList.add('flash-active');
+                      setTimeout(() => {
+                          flashScreen.classList.remove('flash-active');
+                          window.location.reload();
+                      }, 200);
+                  }, 800); 
+              } else {
+                  ptrContainer.style.transform = 'translateY(0)';
+                  ptrBox.style.transform = 'scale(0)';
+              }
+          });
+      }
+  </script>
 
   <!-- ==============================================================================
      SCRIPT KHUSUS UNTUK INTERCEPT TOMBOL BACK FISIK (NATIVE APP EXPERIENCE)
