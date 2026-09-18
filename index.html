@@ -166,6 +166,20 @@
         <span id="toast-message">Notifikasi</span>
     </div>
 
+    <!-- MODAL KELUAR APLIKASI (MUNCUL SAAT BACK FISIK DI HOME) -->
+    <div id="exit-app-modal" class="modal-overlay" style="z-index: 99999;">
+        <div class="modal-content">
+            <i class="fa-solid fa-door-open modal-icon-bg" style="font-size: 130px; opacity: 0.1;"></i>
+            <div class="modal-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><i class="fa-solid fa-power-off"></i></div>
+            <h3 class="modal-title">Keluar Aplikasi?</h3>
+            <p class="modal-text">Apakah Anda yakin ingin menutup dan keluar dari aplikasi MoneyChanger?</p>
+            <div class="modal-buttons">
+                <button onclick="closeExitAppModal()" class="btn-modal-cancel">Batal</button>
+                <button onclick="executeExitApp()" class="btn-modal-confirm" style="background: #ef4444; color: white;">Ya, Keluar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL LOGOUT -->
     <div id="logout-modal" class="modal-overlay">
         <div class="modal-content">
@@ -175,7 +189,7 @@
             <p class="modal-text">Sesi Anda akan diakhiri dan Anda perlu login kembali untuk bertransaksi.</p>
             <div class="modal-buttons">
                 <button onclick="closeLogoutModal()" class="btn-modal-cancel">Batal</button>
-                <button onclick="executeLogout()" class="btn-modal-confirm">Ya, Keluar</button>
+                <button onclick="executeLogout()" class="btn-modal-confirm">Ya, Logout</button>
             </div>
         </div>
     </div>
@@ -1257,7 +1271,43 @@
      SCRIPT CUSTOMIZATION V2: PULL TO REFRESH, SMART BACK BUTTON & SMOOTH TRANSITION
   =================================================================================== -->
   <script>
+  
+  // FUNGSI UNTUK MODAL KELUAR APLIKASI
+  function closeExitAppModal() {
+      document.getElementById('exit-app-modal').style.display = 'none';
+  }
+
+  function executeExitApp() {
+      // Menutup modal exit
+      closeExitAppModal();
+      
+      // Menutup app melalui browser window (Mendukung pwa desktop dan beberapa webview)
+      window.close();
+      
+      // Jika di webview Android native / Cordova
+      if (navigator.app && navigator.app.exitApp) {
+          navigator.app.exitApp();
+      } else {
+          // Jika window.close() terblokir oleh browser (seperti safari mobile/chrome standard),
+          // fallback mengarahkan history mundur jauh atau memberikan alert.
+          try {
+              window.history.go(-(window.history.length - 1));
+          } catch(e) {
+              // Fallback notifikasi
+              if(typeof showToast === 'function') {
+                   showToast("Silakan tutup tab atau tekan tombol Home untuk keluar.", "info");
+              } else {
+                   alert("Silakan tutup tab browser untuk keluar dari aplikasi.");
+              }
+          }
+      }
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
+      
+      // Mendorong status inisialisasi agar tombol back bisa terdeteksi di halaman beranda pertama kali
+      history.pushState({ id: 'home' }, '', window.location.pathname);
+
       // 1. INJECT CSS UNTUK ANIMASI & PULL TO REFRESH (Tanpa merusak CSS asli)
       const customStyles = `
           /* Pull to Refresh Styles */
@@ -1463,7 +1513,16 @@
                       if (history.state && history.state.id === target.id) {
                           isProgrammaticBack = true;
                           history.back(); // Singkronkan log history HP
-                          setTimeout(() => { isProgrammaticBack = false; }, 100); 
+                          
+                          // Dorong kembali state home jika sudah tidak ada overlay yang berjalan
+                          if(activeOverlays.length === 0) {
+                              setTimeout(() => { 
+                                  history.pushState({ id: 'home' }, '', window.location.pathname);
+                                  isProgrammaticBack = false; 
+                              }, 100);
+                          } else {
+                              setTimeout(() => { isProgrammaticBack = false; }, 100); 
+                          }
                       }
                   }
               }
@@ -1489,16 +1548,16 @@
                   const topOverlay = activeOverlays[activeOverlays.length - 1];
                   history.pushState({ id: topOverlay.id }, '', `#${topOverlay.id}`);
               } else {
-                  history.pushState(null, '', window.location.pathname);
+                  history.pushState({ id: 'home' }, '', window.location.pathname);
               }
               
               // Animasi Tolak ringan (opsional) agar user sadar
-              const modalContent = openModals[0].querySelector('.modal-content');
+              const modalContent = openModals[openModals.length - 1].querySelector('.modal-content');
               if (modalContent) {
                   modalContent.style.transform = 'scale(1.03)';
                   setTimeout(() => { modalContent.style.transform = 'scale(1)'; }, 150);
               }
-              return; // Matikan skrip di sini (Jangan tutup page-overlay)
+              return; // Matikan skrip di sini (Jangan tutup page-overlay atau pindah tahap berikutnya)
           }
 
           // RULE B: CEK PAGE OVERLAY (TUTUP NORMAL DENGAN ANIMASI SMOOTH)
@@ -1521,7 +1580,23 @@
                       targetOverlay.style.display = 'none';
                   }
                   targetOverlay.classList.remove('page-overlay-closing');
+                  
+                  // Jika setelah menutup ini tidak ada overlay lagi, pastikan state home ada
+                  if(activeOverlays.length === 0) {
+                      history.pushState({ id: 'home' }, '', window.location.pathname);
+                  }
               }, 300); // Tunggu pergerakan animasi tuntas
+              return; // Matikan script agar tidak lanjut ke konfirmasi exit
+          }
+
+          // RULE C: HALAMAN DEPAN (HOME/DASHBOARD) - MUNCULKAN POPUP EXIT APLIKASI
+          if (activeOverlays.length === 0 && openModals.length === 0) {
+              // Menampilkan modal peringatan konfirmasi keluar
+              document.getElementById('exit-app-modal').style.display = 'flex';
+              
+              // Mendorong state kembali agar tombol back fisik selanjutnya tidak 
+              // menutup browser secara tiba-tiba sebelum pengguna memilih "Ya, Keluar" atau "Batal"
+              history.pushState({ id: 'home' }, '', window.location.pathname);
           }
       });
   });
