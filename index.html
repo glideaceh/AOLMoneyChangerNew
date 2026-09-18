@@ -21,7 +21,7 @@
 ========================================== */
 .pwa-floating-card {
     position: fixed;
-    bottom: -150px;
+    bottom: -150px; /* Mulai dari bawah layer (tersembunyi) */
     left: 50%;
     transform: translateX(-50%) scale(0.95);
     background: linear-gradient(990deg,rgba(180, 250, 209, 1) 50%, rgba(242, 236, 184, 1) 100%);
@@ -36,7 +36,7 @@
     z-index: 99999999;
     width: 92%;
     max-width: 400px;
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* Efek memantul mulus */
     opacity: 0;
     visibility: hidden;
 }
@@ -67,7 +67,7 @@
     border-radius: 1.25rem;
     flex-shrink: 0;
     box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
-    animation: pulse-glow 2s infinite;
+    animation: pulse-glow 2s infinite; /* Animasi menyala */
 }
 
 @keyframes pulse-glow {
@@ -132,6 +132,7 @@
     box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
 }
 
+/* KUNCI: Pastikan card PWA tidak pernah tampil di mode Desktop / Web PC */
 @media (min-width: 769px) {
     .pwa-floating-card, .pwa-floating-card.show {
         display: none !important;
@@ -141,83 +142,118 @@
 }
 
 /* ==========================================
-   PULL TO REFRESH & EXIT MODAL CUSTOM CSS
+   CSS CUSTOM PULL TO REFRESH & ANIMASI BACK
 ========================================== */
-body {
-    overscroll-behavior-y: none; /* Mencegah pull-to-refresh bawaan browser */
-}
 
-#custom-ptr-indicator {
-    position: fixed;
-    top: -80px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 12px 24px;
-    border-radius: 30px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    z-index: 999999;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #3b82f6;
-    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-#custom-ptr-indicator i {
-    font-size: 1.1rem;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-#custom-ptr-indicator.ready i {
-    transform: rotate(180deg);
-    color: #10b981;
-}
-
-#refresh-fade-overlay {
+/* 1. Efek Flash saat Refresh Terpicu */
+.page-flash-effect {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(248, 250, 252, 0.98);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    z-index: 99999999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 999999;
+    pointer-events: none;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.5s ease;
+    transition: opacity 0.4s ease-out;
 }
-
-#refresh-fade-overlay.active {
+.page-flash-effect.active {
     opacity: 1;
     visibility: visible;
+    transition: opacity 0.1s;
 }
 
-.fade-spinner {
-    font-size: 3rem;
+/* 2. Indikator Pull to Refresh Modern */
+.ptr-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9998;
+    pointer-events: none;
+    transform: translateY(-100%);
+    /* Dibuat sangat mulus */
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ptr-box {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 10px 24px;
+    border-radius: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255,255,255,0.7) inset;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ptr-icon {
+    font-size: 1.25rem;
     color: #3b82f6;
-    margin-bottom: 1rem;
-    animation: spin 1s linear infinite;
+    transition: transform 0.1s ease-out;
 }
 
-.fade-text {
+.ptr-text {
+    font-size: 0.9rem;
     font-weight: 700;
-    color: #0f172a;
-    font-size: 1.2rem;
-    letter-spacing: 1px;
+    color: #1e293b;
+}
+
+.ptr-loading .ptr-icon {
+    animation: ptr-spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes ptr-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 3. Animasi Getar (Shake) untuk Modal Overlay */
+@keyframes shake-modal {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+.shake-animation {
+    animation: shake-modal 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* 4. Animasi Goyang (Bounce) untuk Panah Back */
+@keyframes bounce-arrow-left {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-12px); color: #ef4444;}
+}
+.bounce-arrow {
+    animation: bounce-arrow-left 0.6s ease-in-out;
 }
   </style>
 </head>
 <body>
+    
+    <!-- ELEMEN FLASH & PULL TO REFRESH -->
+    <div id="page-flash" class="page-flash-effect"></div>
+    <div id="ptr-wrapper" class="ptr-wrapper">
+        <div class="ptr-box">
+            <i id="ptr-icon" class="fa-solid fa-arrow-down ptr-icon"></i>
+            <span id="ptr-text" class="ptr-text">Tarik untuk memuat</span>
+        </div>
+    </div>
+
  <!-- KOMPONEN PWA FLOATING CARD -->
     <div id="pwa-install-card" class="pwa-floating-card">
         <div class="pwa-content">
@@ -236,35 +272,25 @@ body {
 
   <div class="app-container">
     
-    <!-- INDIKATOR PULL TO REFRESH -->
-    <div id="custom-ptr-indicator">
-        <i id="ptr-icon" class="fa-solid fa-arrow-down"></i>
-        <span id="ptr-text">Tarik untuk Memuat</span>
-    </div>
-
-    <!-- OVERLAY FADE ANIMASI REFRESH -->
-    <div id="refresh-fade-overlay">
-        <i class="fa-solid fa-circle-notch fade-spinner"></i>
-        <span class="fade-text">Memuat Ulang...</span>
-    </div>
-
-    <!-- MODAL KELUAR APLIKASI (HARDWARE BACK BUTTON) -->
-    <div id="exit-app-modal" class="modal-overlay">
-        <div class="modal-content">
-            <i class="fa-solid fa-door-open modal-icon-bg" style="font-size: 130px; opacity: 0.05;"></i>
-            <div class="modal-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><i class="fa-solid fa-power-off"></i></div>
-            <h3 class="modal-title">Keluar Aplikasi?</h3>
-            <p class="modal-text">Apakah Anda yakin ingin menutup aplikasi MoneyChanger?</p>
-            <div class="modal-buttons">
-                <button onclick="closeExitModal()" class="btn-modal-cancel">Batal</button>
-                <button onclick="confirmExitApp()" class="btn-modal-confirm" style="background: linear-gradient(135deg, #ef4444, #dc2626);">Ya, Keluar</button>
-            </div>
-        </div>
-    </div>
-
     <div id="floating-toast" class="toast-notif">
         <i class="fa-solid fa-circle-exclamation"></i>
         <span id="toast-message">Notifikasi</span>
+    </div>
+
+    <!-- MODAL KELUAR APLIKASI (BARU) -->
+    <div id="exit-app-modal" class="modal-overlay">
+        <div class="modal-content">
+            <i class="fa-solid fa-door-open modal-icon-bg" style="opacity: 0.05;"></i>
+            <div class="modal-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                <i class="fa-solid fa-power-off"></i>
+            </div>
+            <h3 class="modal-title">Keluar Aplikasi?</h3>
+            <p class="modal-text">Apakah Anda yakin ingin keluar dari aplikasi MoneyChanger?</p>
+            <div class="modal-buttons">
+                <button onclick="cancelExitApp()" class="btn-modal-cancel">Kembali</button>
+                <button onclick="confirmExitApp()" class="btn-modal-confirm" style="background: #ef4444;">Ya, Keluar</button>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL LOGOUT -->
@@ -1272,190 +1298,216 @@ body {
 </div>
 
   </div>
+  
   <script src="https://cdn.jsdelivr.net/gh/glideaceh/AOLMoneyChangerNew/script.js"></script>
+  
   <script>
   // ==========================================
-// PWA INSTALL PROMPT & SERVICE WORKER 
-// ==========================================
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js')
-            .catch(err => console.log('SW Registration Failed:', err));
-    });
-}
+  // PWA INSTALL PROMPT & SERVICE WORKER
+  // ==========================================
+  if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./service-worker.js')
+              .catch(err => console.log('SW Registration Failed:', err));
+      });
+  }
 
-let deferredPrompt;
-const pwaCard = document.getElementById('pwa-install-card');
-const btnInstall = document.getElementById('pwa-btn-install');
-const btnCancel = document.getElementById('pwa-btn-cancel');
-const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-const isInstalled = localStorage.getItem('pwa_installed') === 'true';
+  let deferredPrompt;
+  const pwaCard = document.getElementById('pwa-install-card');
+  const btnInstall = document.getElementById('pwa-btn-install');
+  const btnCancel = document.getElementById('pwa-btn-cancel');
 
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-});
+  const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const isInstalled = localStorage.getItem('pwa_installed') === 'true';
 
-window.addEventListener('appinstalled', (evt) => {
-    localStorage.setItem('pwa_user_installed', 'true');
-    if (pwaCard) pwaCard.classList.remove('show');
-});
+  window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+  });
 
-if (isMobile && !isStandalone && !isInstalled) {
-    setTimeout(() => {
-        if (pwaCard) pwaCard.classList.add('show');
-    }, 2000); 
-}
+  window.addEventListener('appinstalled', (evt) => {
+      localStorage.setItem('pwa_user_installed', 'true');
+      if (pwaCard) pwaCard.classList.remove('show');
+  });
 
-if(btnInstall) {
-    btnInstall.addEventListener('click', async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                pwaCard.classList.remove('show');
-                localStorage.setItem('pwa_installed', 'true');
-            }
-            deferredPrompt = null;
-        } else if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-            alert('Sistem Apple iOS membatasi instalasi otomatis.\\n\\nSilakan ketuk ikon "Share" (kotak dengan panah atas) di bar bawah Safari, lalu pilih "Add to Home Screen" (Tambahkan ke Layar Utama).');
-        } else {
-            alert('Aplikasi sudah terinstal, atau browser Anda tidak mendukung pop-up instalasi otomatis.');
-            pwaCard.classList.remove('show');
-            localStorage.setItem('pwa_installed', 'true'); 
-        }
-    });
-}
+  if (isMobile && !isStandalone && !isInstalled) {
+      setTimeout(() => {
+          if (pwaCard) pwaCard.classList.add('show');
+      }, 2000); 
+  }
 
-if(btnCancel) {
-    btnCancel.addEventListener('click', () => {
-        pwaCard.classList.remove('show');
-    });
-}
+  if(btnInstall) {
+      btnInstall.addEventListener('click', async () => {
+          if (deferredPrompt) {
+              deferredPrompt.prompt();
+              const { outcome } = await deferredPrompt.userChoice;
+              if (outcome === 'accepted') {
+                  pwaCard.classList.remove('show');
+                  localStorage.setItem('pwa_installed', 'true');
+              }
+              deferredPrompt = null;
+          } else if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+              alert('Sistem Apple iOS membatasi instalasi otomatis.\n\nSilakan ketuk ikon "Share" (kotak dengan panah atas) di bar bawah Safari, lalu pilih "Add to Home Screen" (Tambahkan ke Layar Utama).');
+          } else {
+              alert('Aplikasi sudah terinstal, atau browser Anda tidak mendukung pop-up instalasi otomatis.');
+              pwaCard.classList.remove('show');
+              localStorage.setItem('pwa_installed', 'true'); 
+          }
+      });
+  }
 
-// ==========================================
-// FITUR 1: PULL TO REFRESH (KHUSUS HALAMAN DEPAN)
-// ==========================================
-const ptrIndicator = document.getElementById('custom-ptr-indicator');
-const ptrText = document.getElementById('ptr-text');
-const ptrIcon = document.getElementById('ptr-icon');
-const fadeOverlay = document.getElementById('refresh-fade-overlay');
-let startY = 0;
-let currentY = 0;
-let isPulling = false;
-const pullThreshold = 150; 
+  if(btnCancel) {
+      btnCancel.addEventListener('click', () => {
+          pwaCard.classList.remove('show');
+      });
+  }
 
-function isOverlayActive() {
-    let isActive = false;
-    document.querySelectorAll('.page-overlay, .modal-overlay').forEach(el => {
-        const rect = el.getBoundingClientRect();
-        const style = window.getComputedStyle(el);
-        if (style.display !== 'none' && style.opacity !== '0' && rect.left < window.innerWidth && rect.width > 0) {
-            if(el.id !== 'exit-app-modal') {
-                isActive = true;
-            }
-        }
-    });
-    return isActive;
-}
+  // ==============================================================================
+  // SCRIPT KHUSUS PULL TO REFRESH (EKSKLUSIF HALAMAN DEPAN BERANDA)
+  // ==============================================================================
+  const ptrWrapper = document.getElementById('ptr-wrapper');
+  const ptrIcon = document.getElementById('ptr-icon');
+  const ptrText = document.getElementById('ptr-text');
+  const pageFlash = document.getElementById('page-flash');
+  
+  let startY = 0;
+  let isPulling = false;
+  const ptrThreshold = 150; // Jarak tarikan harus dalam/cukup jauh
 
-document.addEventListener('touchstart', (e) => {
-    const homePage = document.getElementById('main-home-page');
-    // Pastikan berada di halaman depan, scroll posisi puncak, & tidak ada modal/overlay lain terbuka
-    if (window.scrollY === 0 && window.getComputedStyle(homePage).display !== 'none' && !isOverlayActive()) {
-        startY = e.touches[0].clientY;
-        isPulling = true;
-        ptrIndicator.style.transition = 'none';
-    }
-}, { passive: true });
+  document.addEventListener('touchstart', (e) => {
+      const homePage = document.getElementById('main-home-page');
+      const isHomeActive = homePage && window.getComputedStyle(homePage).display !== 'none';
+      
+      // Pastikan tidak ada overlay (modal/page) yang sedang terbuka
+      const anyOverlayOpen = Array.from(document.querySelectorAll('.page-overlay, .modal-overlay'))
+          .some(el => window.getComputedStyle(el).display !== 'none' && el.id !== 'exit-app-modal');
 
-document.addEventListener('touchmove', (e) => {
-    if (!isPulling) return;
-    currentY = e.touches[0].clientY;
-    let distance = currentY - startY;
+      if (window.scrollY === 0 && isHomeActive && !anyOverlayOpen) {
+          startY = e.touches[0].clientY;
+          isPulling = true;
+          ptrWrapper.style.transition = 'none'; // Matikan transisi saat jari digerakkan
+      }
+  }, {passive: true});
 
-    if (distance > 0 && window.scrollY <= 0) {
-        let resist = distance / 2.5; // Efek berat tarikan
-        if (resist > pullThreshold + 30) resist = pullThreshold + 30; // Max batas tarik
-        
-        ptrIndicator.style.transform = `translateY(${resist}px) translateX(-50%)`;
-        
-        if (distance > pullThreshold) {
-            ptrIndicator.classList.add('ready');
-            ptrText.innerText = "Lepaskan untuk Memuat";
-            ptrIcon.className = "fa-solid fa-arrow-up";
-        } else {
-            ptrIndicator.classList.remove('ready');
-            ptrText.innerText = "Tarik untuk Memuat";
-            ptrIcon.className = "fa-solid fa-arrow-down";
-        }
-    }
-}, { passive: true });
+  document.addEventListener('touchmove', (e) => {
+      if (!isPulling) return;
+      
+      let pullDistance = e.touches[0].clientY - startY;
+      
+      if (pullDistance > 0 && window.scrollY === 0) {
+          // Rumus resistensi agar tarikan terasa berat (tidak terlalu sensitif)
+          let visualTranslate = pullDistance * 0.4; 
+          if (visualTranslate > 70) {
+              visualTranslate = 70 + (visualTranslate - 70) * 0.15;
+          }
 
-document.addEventListener('touchend', (e) => {
-    if (!isPulling) return;
-    isPulling = false;
-    let distance = currentY - startY;
-    
-    ptrIndicator.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
-    
-    if (distance > pullThreshold && window.scrollY <= 0) {
-        ptrIndicator.style.transform = `translateY(70px) translateX(-50%)`;
-        ptrIcon.className = "fa-solid fa-rotate-right fa-spin";
-        ptrText.innerText = "Menyegarkan...";
-        
-        // Memunculkan efek fade
-        setTimeout(() => {
-            fadeOverlay.classList.add('active');
-            setTimeout(() => {
-                window.location.reload(true);
-            }, 500); 
-        }, 400);
-    } else {
-        // Tarikan dibatalkan, kembali sembunyi
-        ptrIndicator.style.transform = `translateY(-100px) translateX(-50%)`;
-        ptrIndicator.classList.remove('ready');
-    }
-});
+          ptrWrapper.style.transform = `translateY(${visualTranslate}px)`;
+          ptrIcon.style.transform = `rotate(${pullDistance}deg)`;
+          
+          if (pullDistance > ptrThreshold) {
+              ptrIcon.className = "fa-solid fa-arrow-up ptr-icon";
+              ptrText.textContent = "Lepas untuk memuat ulang";
+          } else {
+              ptrIcon.className = "fa-solid fa-arrow-down ptr-icon";
+              ptrText.textContent = "Tarik untuk memuat";
+          }
+      }
+  }, {passive: true});
 
-// ==========================================
-// FITUR 2: INTERSEPSI TOMBOL BACK FISIK
-// ==========================================
-window.history.pushState({ page: 1 }, "", "");
+  document.addEventListener('touchend', (e) => {
+      if (!isPulling) return;
+      isPulling = false;
+      
+      let pullDistance = e.changedTouches[0].clientY - startY;
+      ptrWrapper.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
 
-window.addEventListener("popstate", function(event) {
-    // Menjebak ulang agar pengguna tidak bisa kembali ke halaman sebelumnya di browser
-    window.history.pushState({ page: 1 }, "", "");
+      if (pullDistance > ptrThreshold && window.scrollY === 0) {
+          // Trigger Refresh Action
+          ptrWrapper.classList.add('ptr-loading');
+          ptrIcon.className = "fa-solid fa-circle-notch ptr-icon";
+          ptrText.textContent = "Memuat ulang...";
+          ptrWrapper.style.transform = `translateY(70px)`;
+          
+          // Flash effect
+          pageFlash.classList.add('active');
+          if (navigator.vibrate) navigator.vibrate(50);
 
-    const homePage = document.getElementById('main-home-page');
-    const isHomeVisible = window.getComputedStyle(homePage).display !== 'none';
-    
-    if (isHomeVisible && !isOverlayActive()) {
-        // Jika sedang di halaman utama & tidak ada overlay, munculkan modal konfirmasi
-        document.getElementById('exit-app-modal').style.display = 'flex';
-    } else {
-        // Jika sedang berada di overlay (menu lain) / modal lain, cegah exit & getarkan hp
-        if (navigator.vibrate) {
-            navigator.vibrate(200);
-        }
-    }
-});
+          setTimeout(() => {
+              window.location.reload(true);
+          }, 600); // Eksekusi reload setelah animasi loading berjalan sedikit
+      } else {
+          // Batal Refresh
+          ptrWrapper.style.transform = `translateY(-100%)`;
+          setTimeout(() => {
+              ptrIcon.className = "fa-solid fa-arrow-down ptr-icon";
+              ptrText.textContent = "Tarik untuk memuat";
+          }, 300);
+      }
+  });
 
-function closeExitModal() {
-    document.getElementById('exit-app-modal').style.display = 'none';
-}
+  // ==============================================================================
+  // SCRIPT KHUSUS INTERCEPT TOMBOL BACK FISIK (SMART NATIVE EXPERIENCE)
+  // ==============================================================================
+  
+  // Set history state awal saat app di muat untuk mengaktifkan popstate
+  window.addEventListener('load', () => {
+      history.pushState({ app_state: 'active' }, '');
+  });
 
-function confirmExitApp() {
-    // Untuk PWA dan Cordova
-    if (navigator.app) {
-        navigator.app.exitApp();
-    } else if (navigator.device) {
-        navigator.device.exitApp();
-    } else {
-        window.close();
-    }
-}
-</script>
+  function confirmExitApp() {
+      sessionStorage.setItem('allow_exit_pwa', 'true');
+      document.getElementById('exit-app-modal').style.display = 'none';
+      window.history.back(); // Karena kita mengizinkan, browser akan keluar app
+  }
+
+  function cancelExitApp() {
+      document.getElementById('exit-app-modal').style.display = 'none';
+  }
+
+  window.addEventListener('popstate', (event) => {
+      // Jika pengguna menekan "Ya, Keluar" di pop up modal
+      if (sessionStorage.getItem('allow_exit_pwa') === 'true') {
+          sessionStorage.removeItem('allow_exit_pwa');
+          return; // Biarkan default system yang mengeksekusi penutupan tab/aplikasi
+      }
+
+      // Kunci kembali history agar app tidak tertutup
+      history.pushState({ app_state: 'active' }, '');
+
+      // Cek elemen UI yang sedang terbuka dan menghalangi
+      const openModals = Array.from(document.querySelectorAll('.modal-overlay'))
+          .filter(el => window.getComputedStyle(el).display !== 'none' && el.id !== 'exit-app-modal');
+      const openPages = Array.from(document.querySelectorAll('.page-overlay'))
+          .filter(el => window.getComputedStyle(el).display !== 'none');
+
+      if (openModals.length > 0) {
+          // Skenario 1: Jika Modal Overlay sedang terbuka (Jangan ditutup, beri efek getar)
+          if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+          
+          const targetModal = openModals[openModals.length - 1].querySelector('.modal-content');
+          if (targetModal) {
+              targetModal.classList.remove('shake-animation');
+              void targetModal.offsetWidth; // Memicu reflow DOM untuk mereset animasi
+              targetModal.classList.add('shake-animation');
+          }
+      } 
+      else if (openPages.length > 0) {
+          // Skenario 2: Jika Page Overlay (Halaman Penuh) terbuka (Jangan ditutup, gerakkan panah)
+          const targetPage = openPages[openPages.length - 1];
+          const backArrowBtn = targetPage.querySelector('.back-btn');
+          
+          if (backArrowBtn) {
+              backArrowBtn.classList.remove('bounce-arrow');
+              void backArrowBtn.offsetWidth; 
+              backArrowBtn.classList.add('bounce-arrow');
+          }
+      } 
+      else {
+          // Skenario 3: Berada di Halaman Utama / Beranda (Munculkan Peringatan Keluar)
+          document.getElementById('exit-app-modal').style.display = 'flex';
+      }
+  });
+  </script>
 </body>
 </html>
