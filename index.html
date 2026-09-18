@@ -1252,8 +1252,62 @@
       });
   }
   </script>
-  
+
+  <!-- ==========================================
+     SCRIPT PULL TO REFRESH (TAMBAHAN BARU)
+  ========================================== -->
   <script>
+  document.addEventListener("DOMContentLoaded", () => {
+      // 1. INJECT CSS UNTUK ANIMASI & PULL TO REFRESH
+      const customStyles = `
+          #ptr-container {
+              position: absolute;
+              top: -70px; left: 0; width: 100%; height: 70px;
+              display: flex; justify-content: center; align-items: center;
+              z-index: 50;
+              transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+              pointer-events: none;
+          }
+          .ptr-box {
+              background: rgba(255, 255, 255, 0.95);
+              backdrop-filter: blur(10px);
+              width: 45px; height: 45px; border-radius: 50%;
+              display: flex; justify-content: center; align-items: center;
+              box-shadow: 0 4px 15px rgba(0,0,0,0.1), 0 0 0 1px rgba(59,130,246,0.1);
+              transform: scale(0);
+              transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          }
+          .ptr-icon-spinner { color: #2563eb; font-size: 1.2rem; transition: transform 0.1s; }
+          .ptr-box.refreshing .ptr-icon-spinner { animation: ptr-spin 0.8s linear infinite; }
+          @keyframes ptr-spin { 100% { transform: rotate(360deg); } }
+          
+          #screen-flash {
+              position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+              background-color: white; z-index: 999999999;
+              opacity: 0; pointer-events: none; transition: opacity 0.15s ease-out;
+          }
+          .flash-active { opacity: 1 !important; }
+
+          .page-overlay { transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease; }
+          .page-overlay-closing { transform: translateX(100%) !important; opacity: 0 !important; }
+      `;
+      const styleSheet = document.createElement("style");
+      styleSheet.type = "text/css";
+      styleSheet.innerText = customStyles;
+      document.head.appendChild(styleSheet);
+
+      // 2. PULL TO REFRESH DOM INJECT
+      const homePage = document.getElementById('main-home-page');
+      if (homePage) {
+          homePage.style.position = 'relative'; 
+          homePage.insertAdjacentHTML('afterbegin', `
+              <div id="ptr-container">
+                  <div class="ptr-box" id="ptr-box"><i class="fa-solid fa-arrows-rotate ptr-icon-spinner" id="ptr-icon"></i></div>
+              </div>
+          `);
+      }
+      document.body.insertAdjacentHTML('beforeend', '<div id="screen-flash"></div>');
+
       // 3. LOGIKA PULL TO REFRESH
       let startY = 0, currentY = 0, isPulling = false;
       const ptrContainer = document.getElementById('ptr-container');
@@ -1303,6 +1357,7 @@
               }
           });
       }
+  });
   </script>
 
   <!-- ==============================================================================
@@ -1322,66 +1377,4 @@
                   const target = mutation.target;
                   
                   // Mendeteksi apakah elemen saat ini sedang ditampilkan ke user
-                  const isVisible = window.getComputedStyle(target).display !== 'none';
-                  const inHistory = target.getAttribute('data-in-history') === 'true';
-
-                  // KONDISI 1: Overlay/Modal baru saja dibuka
-                  if (isVisible && !inHistory) {
-                      target.setAttribute('data-in-history', 'true');
-                      overlayStack.push(target);
-                      // Injeksi state ke dalam history browser HP
-                      history.pushState({ overlayId: target.id }, '', `#${target.id}`);
-                  }
-                  
-                  // KONDISI 2: Overlay ditutup melalui tombol 'X' atau 'Kembali' di layar (UI)
-                  else if (!isVisible && inHistory) {
-                      target.removeAttribute('data-in-history');
-                      // Keluarkan elemen ini dari tumpukan (stack)
-                      overlayStack = overlayStack.filter(el => el.id !== target.id);
-                      
-                      // Sinkronkan history browser agar tombol back fisik tidak 'nyangkut'
-                      if (history.state && history.state.overlayId === target.id) {
-                          isNavigatingBack = true;
-                          history.back(); // Panggil fungsi back secara sistem
-                          
-                          // Reset flag setelah delay singkat untuk mencegah tumpang tindih fungsi popstate
-                          setTimeout(() => { isNavigatingBack = false; }, 100); 
-                      }
-                  }
-              }
-          });
-      });
-
-      // Mulai memantau semua halaman & modal yang ada di HTML
-      const overlays = document.querySelectorAll(overlaySelectors.join(', '));
-      overlays.forEach(overlay => {
-          observer.observe(overlay, { attributes: true, attributeFilter: ['style', 'class'] });
-      });
-
-      // Menangkap eksekusi saat pengguna menekan tombol back fisik / usap layar back
-      window.addEventListener('popstate', (event) => {
-          // Abaikan eksekusi jika back ini dipicu dari tombol di layar (bukan fisik)
-          if (isNavigatingBack) return; 
-
-          // Cek apakah ada modal atau overlay yang sedang terbuka
-          if (overlayStack.length > 0) {
-              // Ambil modal yang paling atas (paling terakhir dibuka)
-              const targetOverlay = overlayStack.pop();
-              targetOverlay.removeAttribute('data-in-history');
-
-              // Cari tombol 'back' atau 'cancel' di dalam modal tersebut
-              const closeBtn = targetOverlay.querySelector('.back-btn, .modal-close-btn, .btn-modal-cancel');
-              
-              if (closeBtn) {
-                  // Simulasikan klik pada tombol tersebut agar semua animasi/JS asli tetap berjalan
-                  closeBtn.click();
-              } else {
-                  // Fallback: Jika tidak ada tombolnya, sembunyikan secara paksa
-                  targetOverlay.style.display = 'none';
-              }
-          }
-      });
-  });
-  </script>
-</body>
-</html>
+                  const isVisible =
