@@ -1273,6 +1273,17 @@
           }
           .ptr-icon-spinner { color: #2563eb; font-size: 1.2rem; transition: transform 0.1s; }
           .ptr-box.refreshing .ptr-icon-spinner { animation: ptr-spin 0.8s linear infinite; }
+          
+          /* ANIMASI SHAKE SAAT HARDWARE BACK DIBLOCK PADA MODAL */
+          @keyframes shake-modal {
+              0%, 100% { transform: translateX(0); }
+              20%, 60% { transform: translateX(-8px); }
+              40%, 80% { transform: translateX(8px); }
+          }
+          .shake-animation {
+              animation: shake-modal 0.4s cubic-bezier(.36,.07,.19,.97) both;
+          }
+
           @keyframes ptr-spin { 100% { transform: rotate(360deg); } }
           
           #screen-flash {
@@ -1356,8 +1367,6 @@
       document.querySelectorAll('.back-btn, .modal-close-btn, .btn-modal-cancel').forEach(btn => {
           const originalClick = btn.getAttribute('onclick');
           if (originalClick && btn.closest('.page-overlay')) {
-              // Simpan eksekusi ke dataset agar bisa digunakan lagi oleh hardware back button
-              btn.dataset.originalClick = originalClick;
               btn.removeAttribute('onclick'); 
               btn.addEventListener('click', function(e) {
                   const overlay = this.closest('.page-overlay');
@@ -1418,10 +1427,11 @@
           // Jika user sudah klik "Ya, Keluar", izinkan fungsi back normal (keluar aplikasi)
           if (allowExitApp) return;
 
-          // RULE A: CEK MODAL OVERLAY (BLOCK TOMBOL BACK & PICU GETARAN)
+          // RULE A: CEK MODAL OVERLAY (BLOCK TOMBOL BACK)
           const openModals = Array.from(document.querySelectorAll('.modal-overlay')).filter(m => window.getComputedStyle(m).display !== 'none');
           
           if (openModals.length > 0) {
+              // Paksa kembali state history agar tidak merusak stack routing aplikasi / menutup PWA
               if (activeOverlays.length > 0) {
                   const topOverlay = activeOverlays[activeOverlays.length - 1];
                   history.pushState({ id: topOverlay.id }, '', `#${topOverlay.id}`);
@@ -1429,23 +1439,28 @@
                   history.pushState({ root: true }, '', window.location.pathname);
               }
               
-              const modalContent = openModals[0].querySelector('.modal-content');
+              // Memberikan Efek Getar & Shake Animasi Ke Modal Yang Terbuka
+              const modalContent = openModals[0].querySelector('.modal-content, .forgot-modal-content');
               if (modalContent) {
-                  modalContent.style.transform = 'scale(1.05)';
-                  modalContent.style.transition = 'transform 0.15s ease-in-out';
-                  setTimeout(() => { modalContent.style.transform = 'scale(1)'; }, 150);
-              }
+                  // Memicu haptic feedback (getaran pada smartphone) jika browser menduking
+                  if ("vibrate" in navigator) {
+                      navigator.vibrate([100, 50, 100]);
+                  }
 
-              // Efek Getar HP Jika Modal sedang aktif dan pengguna tekan back fisik
-              if (navigator.vibrate) {
-                  // Getar selama 100ms, henti 50ms, getar lagi 100ms
-                  navigator.vibrate([100, 50, 100]); 
-              }
+                  // Hapus dan tambahkan ulang kelas untuk memicu ulang (restart) CSS Animation
+                  modalContent.classList.remove('shake-animation');
+                  void modalContent.offsetWidth; // Memicu reflow layout DOM
+                  modalContent.classList.add('shake-animation');
 
-              return; 
+                  // Membersihkan class animasi setelah selesai
+                  setTimeout(() => {
+                      modalContent.classList.remove('shake-animation');
+                  }, 400);
+              }
+              return; // BLOKIR agar modal tidak tertutup & aplikasi tidak ter-close
           }
 
-          // RULE B: CEK PAGE OVERLAY (TUTUP HALAMAN DENGAN ANIMASI MULUS)
+          // RULE B: CEK PAGE OVERLAY (TUTUP HALAMAN DENGAN ANIMASI)
           if (activeOverlays.length > 0) {
               const targetOverlay = activeOverlays.pop();
               targetOverlay.removeAttribute('data-in-history');
@@ -1454,11 +1469,10 @@
               const closeBtn = targetOverlay.querySelector('.back-btn');
               
               setTimeout(() => {
-                  // Gunakan perintah eksekusi click asli jika sudah di hijack sebelumnya ke dataset
-                  if (closeBtn && closeBtn.dataset.originalClick) {
-                      new Function(closeBtn.dataset.originalClick)();
-                  } else if (closeBtn && closeBtn.getAttribute('onclick')) {
+                  if (closeBtn && closeBtn.getAttribute('onclick')) {
                       new Function(closeBtn.getAttribute('onclick'))();
+                  } else if (closeBtn) {
+                      closeBtn.click();
                   } else {
                       targetOverlay.style.display = 'none';
                   }
