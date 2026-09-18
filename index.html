@@ -21,7 +21,7 @@
 ========================================== */
 .pwa-floating-card {
     position: fixed;
-    bottom: -150px; /* Mulai dari bawah layer (tersembunyi) */
+    bottom: -150px; 
     left: 50%;
     transform: translateX(-50%) scale(0.95);
     background: linear-gradient(990deg,rgba(180, 250, 209, 1) 50%, rgba(242, 236, 184, 1) 100%);
@@ -36,7 +36,7 @@
     z-index: 99999999;
     width: 92%;
     max-width: 400px;
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* Efek memantul mulus */
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); 
     opacity: 0;
     visibility: hidden;
 }
@@ -67,7 +67,7 @@
     border-radius: 1.25rem;
     flex-shrink: 0;
     box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
-    animation: pulse-glow 2s infinite; /* Animasi menyala */
+    animation: pulse-glow 2s infinite; 
 }
 
 @keyframes pulse-glow {
@@ -166,16 +166,16 @@
         <span id="toast-message">Notifikasi</span>
     </div>
 
-    <!-- MODAL KELUAR APLIKASI (MUNCUL SAAT BACK FISIK DI HOME) -->
-    <div id="exit-app-modal" class="modal-overlay" style="z-index: 99999;">
+    <!-- MODAL KELUAR APLIKASI (BARU) -->
+    <div id="exit-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            <i class="fa-solid fa-door-open modal-icon-bg" style="font-size: 130px; opacity: 0.1;"></i>
+            <i class="fa-solid fa-door-open modal-icon-bg"></i>
             <div class="modal-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><i class="fa-solid fa-power-off"></i></div>
-            <h3 class="modal-title">Keluar Aplikasi?</h3>
-            <p class="modal-text">Apakah Anda yakin ingin menutup dan keluar dari aplikasi MoneyChanger?</p>
+            <h3 class="modal-title">Tutup Aplikasi?</h3>
+            <p class="modal-text">Apakah Anda yakin ingin keluar dari aplikasi MoneyChanger?</p>
             <div class="modal-buttons">
-                <button onclick="closeExitAppModal()" class="btn-modal-cancel">Batal</button>
-                <button onclick="executeExitApp()" class="btn-modal-confirm" style="background: #ef4444; color: white;">Ya, Keluar</button>
+                <button onclick="closeExitModal()" class="btn-modal-cancel">Batal</button>
+                <button onclick="confirmExitApp()" class="btn-modal-confirm">Ya, Keluar</button>
             </div>
         </div>
     </div>
@@ -189,7 +189,7 @@
             <p class="modal-text">Sesi Anda akan diakhiri dan Anda perlu login kembali untuk bertransaksi.</p>
             <div class="modal-buttons">
                 <button onclick="closeLogoutModal()" class="btn-modal-cancel">Batal</button>
-                <button onclick="executeLogout()" class="btn-modal-confirm">Ya, Logout</button>
+                <button onclick="executeLogout()" class="btn-modal-confirm">Ya, Keluar</button>
             </div>
         </div>
     </div>
@@ -208,7 +208,7 @@
         </div>
     </div>
 
-    <!-- MODAL VERIFIKASI OTP REGISTRASI (KEREN & SMOOTH) -->
+    <!-- MODAL VERIFIKASI OTP REGISTRASI -->
     <div id="register-otp-modal" class="modal-overlay">
         <div class="modal-content forgot-modal-content">
             <button class="modal-close-btn" onclick="closeRegisterOtpModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -242,12 +242,12 @@
         </div>
     </div>
 
-    <!-- MODAL LUPA PASSWORD (KEREN & SMOOTH) -->
+    <!-- MODAL LUPA PASSWORD -->
     <div id="forgot-password-modal" class="modal-overlay">
         <div class="modal-content forgot-modal-content">
             <button class="modal-close-btn" onclick="closeForgotPasswordModal()"><i class="fa-solid fa-xmark"></i></button>
 
-            <!-- STEP 1: MASUKKAN EMAIL -->
+            <!-- STEP 1 -->
             <div id="forgot-step-1" class="forgot-step">
                 <div class="modal-icon" style="background: rgba(37,99,235,0.1); color: #2563eb; margin: 0 auto 1rem auto;">
                     <i class="fa-solid fa-key"></i>
@@ -269,7 +269,7 @@
                 </form>
             </div>
 
-            <!-- STEP 2: VERIFIKASI OTP & RESET PASSWORD -->
+            <!-- STEP 2 -->
             <div id="forgot-step-2" class="forgot-step" style="display: none;">
                 <div class="modal-icon" style="background: rgba(16,185,129,0.1); color: #10b981; margin: 0 auto 1rem auto;">
                     <i class="fa-solid fa-shield-halved"></i>
@@ -457,7 +457,6 @@
         <button onclick="openBeliValas()" class="menu-btn"><div class="menu-icon-wrapper icon-beli"><i class="fa-solid fa-wallet"></i></div><span class="menu-label">Beli Valas</span></button>
         <button onclick="openJualValas()" class="menu-btn"><div class="menu-icon-wrapper icon-jual"><i class="fa-solid fa-money-bill-transfer"></i></div><span class="menu-label">Jual Valas</span></button>
         <button onclick="openInformasi()" class="menu-btn"><div class="menu-icon-wrapper icon-info"><i class="fa-solid fa-circle-info"></i></div><span class="menu-label">Informasi</span></button>
-        <!-- MENU LAPORAN TELAH DIAKTIFKAN -->
         <button onclick="openLaporan()" class="menu-btn"><div class="menu-icon-wrapper icon-laporan"><i class="fa-solid fa-chart-line"></i></div><span class="menu-label">Laporan</span></button>
       </div>
 
@@ -519,7 +518,7 @@
     <!-- HALAMAN PROFIL -->
     <div id="main-profile-page" class="profile-page no-scrollbar" style="display: none;">
         
-        <!-- CARD PROFIL UNIFIED MODERN (GABUNGAN FOTO & VERIFIED EMAIL) -->
+        <!-- CARD PROFIL UNIFIED MODERN -->
         <div class="unified-profile-card fade-in-up">
             <div class="upc-bg-orb-1"></div>
             <div class="upc-bg-orb-2"></div>
@@ -570,14 +569,13 @@
       <button class="nav-btn inactive" onclick="switchTab('profile')"><i class="fa-regular fa-user"></i><span class="nav-label">Profil</span></button>
     </nav>
 
-<!-- HALAMAN EDIT REKENING (METODE PEMBAYARAN) -->
+<!-- HALAMAN EDIT REKENING -->
   <div id="page-edit-rekening" class="page-overlay">
     <header class="overlay-header">
         <button onclick="closeEditRekening()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
         <h2 class="overlay-title">Metode Pembayaran</h2>
     </header>
     <div class="overlay-content no-scrollbar" style="padding: 1.25rem;">
-        
         <div style="text-align: center; margin-bottom: 1rem; margin-top: 0.5rem;" class="fade-in-up">
             <h3 style="color: #1e293b; font-size: 1.1rem; margin-bottom: 5px;">Rekening Pencairan</h3>
             <p style="color: #64748b; font-size: 0.85rem; margin: 0;">Rekening ini digunakan untuk menerima dana hasil penjualan valas Anda.</p>
@@ -586,8 +584,6 @@
        <!-- ATM CARD VIEW MODERN -->
 <div class="atm-card-wrapper fade-in-up delay-1">
     <div class="modern-atm-card" id="atm-card-element">
-        
-        <!-- OVERLAY ANIMASI LOADING (BARU) -->
         <div class="atm-loading-overlay" id="atm-loading-overlay">
             <div class="atm-scan-line"></div>
             <div class="atm-loading-icon-wrapper">
@@ -596,8 +592,6 @@
             </div>
             <div class="atm-loading-text">MEMUAT DATA...</div>
         </div>
-        <!-- END OVERLAY ANIMASI -->
-        
         <div class="atm-bg-orb-1"></div>
         <div class="atm-bg-orb-2"></div>
         <div class="atm-content">
@@ -623,14 +617,13 @@
             <i class="fa-solid fa-pen-to-square"></i> Edit Informasi Rekening
         </button>
         
-        <!-- FORM INPUT (DISEMBUNYIKAN AWALNYA) -->
+        <!-- FORM INPUT -->
         <div id="form-rek-container" class="edit-rek-form-container">
             <form id="form-edit-rekening" onsubmit="handleSaveRekening(event)">
                 <div class="auth-input-group" style="text-align: left;">
                     <label class="auth-label">Nama Bank</label>
                     <div class="auth-input-wrapper">
                         <i class="fa-solid fa-building-columns auth-icon"></i>
-                        <!-- Tambahkan oninput untuk realtime update -->
                         <input type="text" id="rek-bank" class="auth-input" placeholder="Contoh: BCA, Mandiri, BRI" required oninput="updateAtmView()">
                     </div>
                 </div>
@@ -653,7 +646,6 @@
                 </button>
             </form>
         </div>
-        
     </div>
 </div>
     <!-- HALAMAN DAFTAR PESAN NOTIFIKASI PENDING -->
@@ -664,7 +656,6 @@
         </header>
         <div class="overlay-content no-scrollbar" style="padding: 1.25rem;">
             <div id="pending-list-container" class="notif-card-container">
-                <!-- Data Pending Card dimuat di sini -->
             </div>
         </div>
     </div>
@@ -770,7 +761,7 @@
         </div>
     </div>
 
-    <!-- HALAMAN LAPORAN (BARU) -->
+    <!-- HALAMAN LAPORAN -->
     <div id="page-laporan" class="page-overlay">
         <header class="overlay-header">
             <button onclick="closeLaporan()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
@@ -778,8 +769,6 @@
         </header>
 
         <div class="overlay-content no-scrollbar" style="padding: 1.25rem;">
-            
-            <!-- Cards Container -->
             <div class="laporan-cards-wrapper fade-in-up">
                 <div class="laporan-card l-beli">
                     <div class="l-orb-1"></div>
@@ -797,7 +786,6 @@
                 </div>
             </div>
 
-            <!-- Chart Container -->
             <div class="laporan-chart-container fade-in-up delay-1">
                 <div class="l-chart-header">
                     <h3>Grafik Volume Transaksi</h3>
@@ -808,7 +796,6 @@
                 </div>
             </div>
 
-            <!-- Insight/Summary Container -->
             <div class="laporan-insight-container fade-in-up delay-2">
                 <h3 class="insight-title"><i class="fa-solid fa-lightbulb" style="color:#eab308;"></i> Ringkasan Aktivitas</h3>
                 <div class="insight-item">
@@ -820,7 +807,6 @@
                     <span class="insight-value" id="insight-status" style="color: #10b981;">Memuat...</span>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -828,12 +814,11 @@
     <div id="article-detail-modal" class="modal-overlay">
         <div class="modal-content forgot-modal-content" style="max-height: 85vh; overflow-y: auto; text-align: left; padding: 1.5rem;">
             <button class="modal-close-btn" onclick="closeArticleModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div id="article-modal-body" class="article-modal-body">
-                <!-- Konten dinamis diisi JS -->
-            </div>
+            <div id="article-modal-body" class="article-modal-body"></div>
         </div>
     </div>
 
+    <!-- HALAMAN BELI VALAS -->
     <div id="page-beli-valas" class="page-overlay">
         <header class="overlay-header">
             <button onclick="closeBeliValas()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
@@ -941,13 +926,13 @@
         </div>
     </div>
 
+    <!-- HALAMAN CHECKOUT TRANSAKSI -->
     <div id="page-detail-pembayaran" class="page-overlay">
         <header class="overlay-header">
             <button onclick="closeAllToHome()" class="back-btn"><i class="fa-solid fa-xmark"></i></button>
             <h2 class="overlay-title">Checkout Transaksi</h2>
         </header>
         <div class="overlay-content no-scrollbar" style="display: flex; flex-direction: column;">
-            
             <div style="text-align: center;" class="fade-in-up">
                 <div class="modern-timer-wrapper">
                     <div class="timer-icon-wrapper"><i class="fa-regular fa-clock"></i></div>
@@ -957,7 +942,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="receipt-card fade-in-up delay-1">
                 <div class="receipt-header"><h3>Detail Pesanan</h3><p id="det-trx-id">Trx ID: AMC000000X</p></div>
                 <div class="receipt-row"><span class="receipt-label">Mata Uang</span><span class="receipt-value" id="det-mata-uang">USD</span></div>
@@ -967,7 +951,6 @@
                 <div class="receipt-row"><span class="receipt-label">Biaya Layanan</span><span class="receipt-value" id="det-admin">Rp 2.500</span></div>
                 <div class="receipt-total"><span class="total-label">Total Tagihan</span><span class="total-value" id="det-total">-</span></div>
             </div>
-            
         </div>
         <div class="overlay-bottom-bar fade-in-up delay-2">
             <button class="btn-transaction shiny-sweep" onclick="openPaymentPage()">
@@ -979,6 +962,7 @@
         </div>
     </div>
 
+    <!-- HALAMAN PEMBAYARAN -->
     <div id="page-metode-pembayaran" class="page-overlay">
         <header class="overlay-header">
             <button onclick="closePaymentPage()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
@@ -991,7 +975,6 @@
         </div>
 
         <div class="overlay-content no-scrollbar" style="padding-bottom: 0;">
-            
             <div id="content-rupiah" class="payment-tab-content fade-in-up delay-1">
                 <div class="bank-info-card">
                     <div class="bank-header">
@@ -1009,7 +992,6 @@
                 </div>
             </div>
 
-            <!-- BAGIAN INI DIPERBARUI DENGAN DESAIN MODERN CARD ABA PAY -->
             <div id="content-dollar" class="payment-tab-content fade-in-up delay-1" style="display: none;">
                 <div class="modern-dollar-card">
                     <div class="dollar-card-header">
@@ -1030,7 +1012,6 @@
                 </div>
             </div>
 
-            <!-- Bagian Upload Bukti Pembayaran -->
             <div class="upload-section fade-in-up delay-2" style="margin-top: 1.5rem;">
                 <h4 class="sec-title" style="margin-bottom: 0.75rem;">Upload Bukti Pembayaran</h4>
                 <div class="upload-area">
@@ -1040,7 +1021,6 @@
                     <p class="upload-sub">Format: JPG, PNG (Max 5MB)</p>
                 </div>
             </div>
-
         </div>
 
         <div id="bottom-bar-konfirmasi" class="overlay-bottom-bar fade-in-up delay-2">
@@ -1050,15 +1030,13 @@
         </div>
     </div>
 
-<!-- HALAMAN EDIT PROFIL (BARU) -->
+<!-- HALAMAN EDIT PROFIL -->
 <div id="page-edit-profil" class="page-overlay">
     <header class="overlay-header">
         <button onclick="closeEditProfil()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
         <h2 class="overlay-title">Edit Profil</h2>
     </header>
     <div class="overlay-content no-scrollbar" style="padding: 1.25rem;">
-        
-        <!-- Area Upload Foto -->
         <div style="text-align: center; margin-bottom: 1.5rem; margin-top: 1rem;" class="fade-in-up">
             <div class="profile-photo-edit-wrapper" style="position: relative; width: 100px; height: 100px; margin: 0 auto; border-radius: 50%; border: 3px solid #2563eb; overflow: hidden; background: #f1f5f9; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
                 <img id="preview-foto-profil" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Budi" style="width: 100%; height: 100%; object-fit: cover;">
@@ -1071,7 +1049,6 @@
         </div>
         
         <form id="form-edit-profil" onsubmit="handleSaveProfil(event)" class="fade-in-up delay-1">
-            <!-- Username & Email Dikunci -->
             <div class="auth-input-group" style="text-align: left;">
                 <label class="auth-label">Username <span style="color:#ef4444; font-weight:400; text-transform:none;">(Dikunci)</span></label>
                 <div class="auth-input-wrapper" style="background-color: #f8fafc; border-color: #e2e8f0; cursor: not-allowed;" onclick="showToast('Hubungi Admin untuk mengubah Username', 'info')">
@@ -1105,13 +1082,13 @@
             </div>
             
             <div class="auth-input-group" style="text-align: left;">
-    <label class="auth-label">Ubah Password <span style="color:#64748b; font-weight:400; text-transform:none;">(Kosongkan jika tidak ingin diubah)</span></label>
-    <div class="auth-input-wrapper">
-        <i class="fa-solid fa-shield-halved auth-icon"></i>
-        <input type="password" id="edit-prof-pass" class="auth-input" placeholder="Masukkan password baru">
-        <i class="fa-regular fa-eye auth-eye" onclick="togglePassword('edit-prof-pass', this)"></i>
-    </div>
-</div>
+                <label class="auth-label">Ubah Password <span style="color:#64748b; font-weight:400; text-transform:none;">(Kosongkan)</span></label>
+                <div class="auth-input-wrapper">
+                    <i class="fa-solid fa-shield-halved auth-icon"></i>
+                    <input type="password" id="edit-prof-pass" class="auth-input" placeholder="Masukkan password baru">
+                    <i class="fa-regular fa-eye auth-eye" onclick="togglePassword('edit-prof-pass', this)"></i>
+                </div>
+            </div>
             
             <button type="submit" id="btn-save-profil" class="btn-primary btn-auth-gradient shiny-sweep" style="margin-top: 1.5rem; padding: 1rem; width: 100%;">
                 Simpan Profil <i class="fa-solid fa-save"></i>
@@ -1134,7 +1111,7 @@
     </div>
 </div>
 
-<!-- HALAMAN PUSAT BANTUAN (BARU) -->
+<!-- HALAMAN PUSAT BANTUAN -->
 <div id="page-bantuan" class="page-overlay">
     <header class="overlay-header">
         <button onclick="closeBantuan()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
@@ -1206,43 +1183,31 @@
   const btnInstall = document.getElementById('pwa-btn-install');
   const btnCancel = document.getElementById('pwa-btn-cancel');
 
-  // Deteksi Device Mobile
   const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-  // Deteksi apakah sedang berjalan di mode PWA (Standalone)
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-
-  // Deteksi apakah PWA sudah pernah diinstal (berdasarkan LocalStorage fallback)
   const isInstalled = localStorage.getItem('pwa_installed') === 'true';
 
-  // Mencegah dan menangkap event instal resmi (Android/Desktop)
   window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
   });
 
-  // Menangkap event saat aplikasi sukses diinstal oleh pengguna
   window.addEventListener('appinstalled', (evt) => {
-      // Kunci PWA Card agar tidak pernah tampil lagi
       localStorage.setItem('pwa_user_installed', 'true');
       if (pwaCard) pwaCard.classList.remove('show');
   });
 
-  // MEMAKSA NOTIFIKASI SELALU MUNCUL HANYA DI MOBILE & JIKA BELUM DIINSTAL:
   if (isMobile && !isStandalone && !isInstalled) {
       setTimeout(() => {
           if (pwaCard) pwaCard.classList.add('show');
-      }, 2000); // Muncul setelah 2 detik halaman termuat
+      }, 2000); 
   }
 
-  // Aksi ketika klik tombol INSTALL
   if(btnInstall) {
       btnInstall.addEventListener('click', async () => {
           if (deferredPrompt) {
-              // Memanggil pop-up install RESMI browser tanpa harus ke menu titik tiga
               deferredPrompt.prompt();
               const { outcome } = await deferredPrompt.userChoice;
-              
               if (outcome === 'accepted') {
                   pwaCard.classList.remove('show');
                   localStorage.setItem('pwa_installed', 'true');
@@ -1253,13 +1218,11 @@
           } else {
               alert('Aplikasi sudah terinstal, atau browser Anda tidak mendukung pop-up instalasi otomatis.');
               pwaCard.classList.remove('show');
-              // Jika sudah tidak ada prompt dan bukan iOS, berarti kemungkinan besar sudah terinstal.
               localStorage.setItem('pwa_installed', 'true'); 
           }
       });
   }
 
-  // Aksi ketika klik Nanti (Cancel)
   if(btnCancel) {
       btnCancel.addEventListener('click', () => {
           pwaCard.classList.remove('show');
@@ -1271,55 +1234,30 @@
      SCRIPT CUSTOMIZATION V2: PULL TO REFRESH, SMART BACK BUTTON & SMOOTH TRANSITION
   =================================================================================== -->
   <script>
-  
-  // FUNGSI UNTUK MODAL KELUAR APLIKASI
-  function closeExitAppModal() {
-      document.getElementById('exit-app-modal').style.display = 'none';
+  // Variabel Global untuk Konfirmasi Keluar Aplikasi
+  let allowExitApp = false;
+
+  function closeExitModal() {
+      document.getElementById('exit-modal').style.display = 'none';
   }
 
-  function executeExitApp() {
-      // Menutup modal exit
-      closeExitAppModal();
+  function confirmExitApp() {
+      allowExitApp = true;
+      history.back(); // Mundur untuk menutup aplikasi di lingkungan PWA / Android
       
-      // Menutup app melalui browser window (Mendukung pwa desktop dan beberapa webview)
-      window.close();
-      
-      // Jika di webview Android native / Cordova
-      if (navigator.app && navigator.app.exitApp) {
-          navigator.app.exitApp();
-      } else {
-          // Jika window.close() terblokir oleh browser (seperti safari mobile/chrome standard),
-          // fallback mengarahkan history mundur jauh atau memberikan alert.
-          try {
-              window.history.go(-(window.history.length - 1));
-          } catch(e) {
-              // Fallback notifikasi
-              if(typeof showToast === 'function') {
-                   showToast("Silakan tutup tab atau tekan tombol Home untuk keluar.", "info");
-              } else {
-                   alert("Silakan tutup tab browser untuk keluar dari aplikasi.");
-              }
-          }
-      }
+      // Fallback eksekusi
+      setTimeout(() => { 
+          window.close(); 
+      }, 300);
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-      
-      // Mendorong status inisialisasi agar tombol back bisa terdeteksi di halaman beranda pertama kali
-      history.pushState({ id: 'home' }, '', window.location.pathname);
-
-      // 1. INJECT CSS UNTUK ANIMASI & PULL TO REFRESH (Tanpa merusak CSS asli)
+      // 1. INJECT CSS UNTUK ANIMASI & PULL TO REFRESH
       const customStyles = `
-          /* Pull to Refresh Styles */
           #ptr-container {
               position: absolute;
-              top: -70px;
-              left: 0;
-              width: 100%;
-              height: 70px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
+              top: -70px; left: 0; width: 100%; height: 70px;
+              display: flex; justify-content: center; align-items: center;
               z-index: 50;
               transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
               pointer-events: none;
@@ -1327,90 +1265,54 @@
           .ptr-box {
               background: rgba(255, 255, 255, 0.95);
               backdrop-filter: blur(10px);
-              width: 45px;
-              height: 45px;
-              border-radius: 50%;
-              display: flex;
-              justify-content: center;
-              align-items: center;
+              width: 45px; height: 45px; border-radius: 50%;
+              display: flex; justify-content: center; align-items: center;
               box-shadow: 0 4px 15px rgba(0,0,0,0.1), 0 0 0 1px rgba(59,130,246,0.1);
               transform: scale(0);
               transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
           }
-          .ptr-icon-spinner {
-              color: #2563eb;
-              font-size: 1.2rem;
-              transition: transform 0.1s;
-          }
-          .ptr-box.refreshing .ptr-icon-spinner {
-              animation: ptr-spin 0.8s linear infinite;
-          }
-          @keyframes ptr-spin {
-              100% { transform: rotate(360deg); }
-          }
+          .ptr-icon-spinner { color: #2563eb; font-size: 1.2rem; transition: transform 0.1s; }
+          .ptr-box.refreshing .ptr-icon-spinner { animation: ptr-spin 0.8s linear infinite; }
+          @keyframes ptr-spin { 100% { transform: rotate(360deg); } }
           
-          /* Screen Flash Effect */
           #screen-flash {
-              position: fixed;
-              top: 0; left: 0; right: 0; bottom: 0;
-              background-color: white;
-              z-index: 999999999;
-              opacity: 0;
-              pointer-events: none;
-              transition: opacity 0.15s ease-out;
+              position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+              background-color: white; z-index: 999999999;
+              opacity: 0; pointer-events: none; transition: opacity 0.15s ease-out;
           }
-          .flash-active {
-              opacity: 1 !important;
-          }
+          .flash-active { opacity: 1 !important; }
 
-          /* Smooth Overlay Transitions */
-          .page-overlay {
-              transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-          }
-          .page-overlay-closing {
-              transform: translateX(100%) !important;
-              opacity: 0 !important;
-          }
+          .page-overlay { transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease; }
+          .page-overlay-closing { transform: translateX(100%) !important; opacity: 0 !important; }
       `;
       const styleSheet = document.createElement("style");
       styleSheet.type = "text/css";
       styleSheet.innerText = customStyles;
       document.head.appendChild(styleSheet);
 
-      // 2. INJECT DOM ELEMENTS UNTUK PULL TO REFRESH
+      // 2. PULL TO REFRESH DOM INJECT
       const homePage = document.getElementById('main-home-page');
       if (homePage) {
-          homePage.style.position = 'relative'; // Pastikan relatif untuk PTR
+          homePage.style.position = 'relative'; 
           homePage.insertAdjacentHTML('afterbegin', `
               <div id="ptr-container">
-                  <div class="ptr-box" id="ptr-box">
-                      <i class="fa-solid fa-arrows-rotate ptr-icon-spinner" id="ptr-icon"></i>
-                  </div>
+                  <div class="ptr-box" id="ptr-box"><i class="fa-solid fa-arrows-rotate ptr-icon-spinner" id="ptr-icon"></i></div>
               </div>
           `);
       }
       document.body.insertAdjacentHTML('beforeend', '<div id="screen-flash"></div>');
 
-      // 3. LOGIKA PULL TO REFRESH (Hanya di Halaman Depan)
-      let startY = 0;
-      let currentY = 0;
-      let isPulling = false;
+      // 3. LOGIKA PULL TO REFRESH
+      let startY = 0, currentY = 0, isPulling = false;
       const ptrContainer = document.getElementById('ptr-container');
       const ptrBox = document.getElementById('ptr-box');
       const ptrIcon = document.getElementById('ptr-icon');
       const flashScreen = document.getElementById('screen-flash');
-      
-      // Atur sensitivitas (Makin besar = butuh tarikan panjang, tidak sensitif)
       const PULL_THRESHOLD = 130; 
 
       if (homePage && ptrContainer) {
           homePage.addEventListener('touchstart', (e) => {
-              // Hanya aktif jika scroll konten posisi paling atas
-              if (homePage.scrollTop <= 0) {
-                  startY = e.touches[0].clientY;
-                  isPulling = true;
-                  ptrContainer.style.transition = 'none';
-              }
+              if (homePage.scrollTop <= 0) { startY = e.touches[0].clientY; isPulling = true; ptrContainer.style.transition = 'none'; }
           }, { passive: true });
 
           homePage.addEventListener('touchmove', (e) => {
@@ -1418,16 +1320,11 @@
               currentY = e.touches[0].clientY;
               let pullDistance = currentY - startY;
 
-              // Jika ditarik ke bawah saat berada di atas
               if (pullDistance > 0 && homePage.scrollTop <= 0) {
-                  // Resistor efek agar tarikan terasa berat & smooth
                   let resistance = pullDistance * 0.45;
-                  
                   ptrContainer.style.transform = `translateY(${resistance}px)`;
                   ptrBox.style.transform = `scale(${Math.min(resistance / 60, 1)})`;
                   ptrIcon.style.transform = `rotate(${resistance * 2.5}deg)`;
-
-                  // Mencegah scroll default browser Chrome (misal pull to reload bawaan)
                   if (e.cancelable) e.preventDefault();
               }
           }, { passive: false });
@@ -1435,51 +1332,39 @@
           homePage.addEventListener('touchend', () => {
               if (!isPulling) return;
               isPulling = false;
-              
               let pullDistance = currentY - startY;
               ptrContainer.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
 
               if (pullDistance > PULL_THRESHOLD) {
-                  // Eksekusi Refresh
-                  ptrContainer.style.transform = 'translateY(80px)'; // Tahan posisi loader
-                  ptrBox.classList.add('refreshing'); // Animasi Muter
-
+                  ptrContainer.style.transform = 'translateY(80px)';
+                  ptrBox.classList.add('refreshing');
                   setTimeout(() => {
-                      // Efek Kedip (Flash) Putih
                       flashScreen.classList.add('flash-active');
-                      
                       setTimeout(() => {
                           flashScreen.classList.remove('flash-active');
-                          // Reload halaman agar data benar-benar ter-refresh secara fungsional
                           window.location.reload();
                       }, 200);
-
-                  }, 800); // Tunda sebentar sebelum kedip
+                  }, 800); 
               } else {
-                  // Batal Refresh (Tarikan tidak sampai batas)
                   ptrContainer.style.transform = 'translateY(0)';
                   ptrBox.style.transform = 'scale(0)';
               }
           });
       }
 
-      // 4. HIJACK TOMBOL BACK UI UNTUK ANIMASI SMOOTH (TANPA MERUSAK FUNGSI ASLI)
+      // 4. HIJACK TOMBOL BACK UI
       document.querySelectorAll('.back-btn, .modal-close-btn, .btn-modal-cancel').forEach(btn => {
           const originalClick = btn.getAttribute('onclick');
-          // Hanya inject efek smooth ke tombol dalam class page-overlay
           if (originalClick && btn.closest('.page-overlay')) {
-              btn.removeAttribute('onclick'); // Hapus fungsi native sementara
+              btn.removeAttribute('onclick'); 
               btn.addEventListener('click', function(e) {
                   const overlay = this.closest('.page-overlay');
                   if (overlay) {
-                      // Tambahkan class penutup animasi geser
                       overlay.classList.add('page-overlay-closing');
                       setTimeout(() => {
-                          // Eksekusi original function bawaan script Anda
                           new Function(originalClick)();
-                          // Bersihkan class untuk state dibuka kembali nantinya
                           overlay.classList.remove('page-overlay-closing');
-                      }, 300); // Samakan dengan timing CSS (0.3s)
+                      }, 300); 
                   } else {
                       new Function(originalClick)();
                   }
@@ -1491,7 +1376,9 @@
       let activeOverlays = [];
       let isProgrammaticBack = false;
 
-      // Pantau otomatis elemen page-overlay terbuka/tutup
+      // Sisipkan State History saat aplikasi pertama dibuka (agar fungsi back bisa ditahan di beranda)
+      history.pushState({ root: true }, '', window.location.pathname);
+
       const observer = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
               if (mutation.attributeName === 'style' || mutation.attributeName === 'class') {
@@ -1499,30 +1386,19 @@
                   const isVisible = window.getComputedStyle(target).display !== 'none';
                   const inHistory = target.getAttribute('data-in-history') === 'true';
 
-                  // Overlay Dibuka
                   if (isVisible && !inHistory) {
                       target.setAttribute('data-in-history', 'true');
                       activeOverlays.push(target);
                       history.pushState({ id: target.id }, '', `#${target.id}`);
                   }
-                  // Overlay Ditutup (misal dari tombol 'X' UI)
                   else if (!isVisible && inHistory) {
                       target.removeAttribute('data-in-history');
                       activeOverlays = activeOverlays.filter(el => el.id !== target.id);
                       
                       if (history.state && history.state.id === target.id) {
                           isProgrammaticBack = true;
-                          history.back(); // Singkronkan log history HP
-                          
-                          // Dorong kembali state home jika sudah tidak ada overlay yang berjalan
-                          if(activeOverlays.length === 0) {
-                              setTimeout(() => { 
-                                  history.pushState({ id: 'home' }, '', window.location.pathname);
-                                  isProgrammaticBack = false; 
-                              }, 100);
-                          } else {
-                              setTimeout(() => { isProgrammaticBack = false; }, 100); 
-                          }
+                          history.back(); 
+                          setTimeout(() => { isProgrammaticBack = false; }, 100); 
                       }
                   }
               }
@@ -1533,42 +1409,38 @@
           observer.observe(overlay, { attributes: true, attributeFilter: ['style', 'class'] });
       });
 
-      // Event Listener saat user usap hp / tekan tombol back fisik
+      // Event Listener Utama saat user usap layar / tekan tombol back fisik HP
       window.addEventListener('popstate', (event) => {
           if (isProgrammaticBack) return; 
 
-          // RULE A: CEK MODAL OVERLAY DULU (BLOCK TOMBOL BACK)
-          // Cari modal alert (Lupa pass, Batal, dsb) yang sedang terbuka
+          // Jika user sudah klik "Ya, Keluar", izinkan fungsi back normal (keluar aplikasi)
+          if (allowExitApp) return;
+
+          // RULE A: CEK MODAL OVERLAY (BLOCK TOMBOL BACK)
           const openModals = Array.from(document.querySelectorAll('.modal-overlay')).filter(m => window.getComputedStyle(m).display !== 'none');
           
           if (openModals.length > 0) {
-              // MODAL TERBUKA! BLOCK FUNGSI BACK FISIK.
-              // Memanipulasi history ke depan kembali untuk memblokir penutupan layar
               if (activeOverlays.length > 0) {
                   const topOverlay = activeOverlays[activeOverlays.length - 1];
                   history.pushState({ id: topOverlay.id }, '', `#${topOverlay.id}`);
               } else {
-                  history.pushState({ id: 'home' }, '', window.location.pathname);
+                  history.pushState({ root: true }, '', window.location.pathname);
               }
               
-              // Animasi Tolak ringan (opsional) agar user sadar
-              const modalContent = openModals[openModals.length - 1].querySelector('.modal-content');
+              const modalContent = openModals[0].querySelector('.modal-content');
               if (modalContent) {
                   modalContent.style.transform = 'scale(1.03)';
                   setTimeout(() => { modalContent.style.transform = 'scale(1)'; }, 150);
               }
-              return; // Matikan skrip di sini (Jangan tutup page-overlay atau pindah tahap berikutnya)
+              return; 
           }
 
-          // RULE B: CEK PAGE OVERLAY (TUTUP NORMAL DENGAN ANIMASI SMOOTH)
+          // RULE B: CEK PAGE OVERLAY (TUTUP HALAMAN DENGAN ANIMASI)
           if (activeOverlays.length > 0) {
               const targetOverlay = activeOverlays.pop();
               targetOverlay.removeAttribute('data-in-history');
-
-              // Animasi geser buang ke kanan
               targetOverlay.classList.add('page-overlay-closing');
               
-              // Temukan back-btn terdekat dan trigger fungsinya otomatis (Hijacked button function)
               const closeBtn = targetOverlay.querySelector('.back-btn');
               
               setTimeout(() => {
@@ -1580,23 +1452,15 @@
                       targetOverlay.style.display = 'none';
                   }
                   targetOverlay.classList.remove('page-overlay-closing');
-                  
-                  // Jika setelah menutup ini tidak ada overlay lagi, pastikan state home ada
-                  if(activeOverlays.length === 0) {
-                      history.pushState({ id: 'home' }, '', window.location.pathname);
-                  }
-              }, 300); // Tunggu pergerakan animasi tuntas
-              return; // Matikan script agar tidak lanjut ke konfirmasi exit
-          }
-
-          // RULE C: HALAMAN DEPAN (HOME/DASHBOARD) - MUNCULKAN POPUP EXIT APLIKASI
-          if (activeOverlays.length === 0 && openModals.length === 0) {
-              // Menampilkan modal peringatan konfirmasi keluar
-              document.getElementById('exit-app-modal').style.display = 'flex';
+              }, 300); 
+          } 
+          // RULE C: POSISI ROOT (BERANDA/DASHBOARD) - MUNCULKAN POP-UP KELUAR
+          else {
+              // Pancing ulang history agar aplikasi tidak close seketika
+              history.pushState({ root: true }, '', window.location.pathname);
               
-              // Mendorong state kembali agar tombol back fisik selanjutnya tidak 
-              // menutup browser secara tiba-tiba sebelum pengguna memilih "Ya, Keluar" atau "Batal"
-              history.pushState({ id: 'home' }, '', window.location.pathname);
+              // Tampilkan Modal Peringatan Keluar Aplikasi
+              document.getElementById('exit-modal').style.display = 'flex';
           }
       });
   });
