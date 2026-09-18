@@ -1356,6 +1356,8 @@
       document.querySelectorAll('.back-btn, .modal-close-btn, .btn-modal-cancel').forEach(btn => {
           const originalClick = btn.getAttribute('onclick');
           if (originalClick && btn.closest('.page-overlay')) {
+              // Simpan eksekusi ke dataset agar bisa digunakan lagi oleh hardware back button
+              btn.dataset.originalClick = originalClick;
               btn.removeAttribute('onclick'); 
               btn.addEventListener('click', function(e) {
                   const overlay = this.closest('.page-overlay');
@@ -1416,7 +1418,7 @@
           // Jika user sudah klik "Ya, Keluar", izinkan fungsi back normal (keluar aplikasi)
           if (allowExitApp) return;
 
-          // RULE A: CEK MODAL OVERLAY (BLOCK TOMBOL BACK)
+          // RULE A: CEK MODAL OVERLAY (BLOCK TOMBOL BACK & PICU GETARAN)
           const openModals = Array.from(document.querySelectorAll('.modal-overlay')).filter(m => window.getComputedStyle(m).display !== 'none');
           
           if (openModals.length > 0) {
@@ -1429,13 +1431,21 @@
               
               const modalContent = openModals[0].querySelector('.modal-content');
               if (modalContent) {
-                  modalContent.style.transform = 'scale(1.03)';
+                  modalContent.style.transform = 'scale(1.05)';
+                  modalContent.style.transition = 'transform 0.15s ease-in-out';
                   setTimeout(() => { modalContent.style.transform = 'scale(1)'; }, 150);
               }
+
+              // Efek Getar HP Jika Modal sedang aktif dan pengguna tekan back fisik
+              if (navigator.vibrate) {
+                  // Getar selama 100ms, henti 50ms, getar lagi 100ms
+                  navigator.vibrate([100, 50, 100]); 
+              }
+
               return; 
           }
 
-          // RULE B: CEK PAGE OVERLAY (TUTUP HALAMAN DENGAN ANIMASI)
+          // RULE B: CEK PAGE OVERLAY (TUTUP HALAMAN DENGAN ANIMASI MULUS)
           if (activeOverlays.length > 0) {
               const targetOverlay = activeOverlays.pop();
               targetOverlay.removeAttribute('data-in-history');
@@ -1444,10 +1454,11 @@
               const closeBtn = targetOverlay.querySelector('.back-btn');
               
               setTimeout(() => {
-                  if (closeBtn && closeBtn.getAttribute('onclick')) {
+                  // Gunakan perintah eksekusi click asli jika sudah di hijack sebelumnya ke dataset
+                  if (closeBtn && closeBtn.dataset.originalClick) {
+                      new Function(closeBtn.dataset.originalClick)();
+                  } else if (closeBtn && closeBtn.getAttribute('onclick')) {
                       new Function(closeBtn.getAttribute('onclick'))();
-                  } else if (closeBtn) {
-                      closeBtn.click();
                   } else {
                       targetOverlay.style.display = 'none';
                   }
